@@ -81,7 +81,18 @@ if (isset($_GET['RollBack_Transaction'])) {
                     <?php
                     //Get latest transactions 
                     $client_id = $_SESSION['client_id'];
-                    $ret = "SELECT * FROM `iB_Transactions` WHERE client_id =? ORDER BY `iB_Transactions`.`created_at` DESC ";
+                    $ret = "SELECT 
+    t.*,  
+    b.account_number, 
+    b.acc_type, 
+    COALESCE(b.acc_name, 'N/A') AS account_owner, 
+    COALESCE(c.name, 'N/A') AS client_name
+FROM iB_Transactions t
+LEFT JOIN ib_bankaccounts b ON t.account_id = b.account_id
+LEFT JOIN ib_clients c ON t.client_id = c.client_id
+WHERE t.client_id = ?
+ORDER BY t.created_at DESC
+ ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->bind_param('i', $client_id);
                     $stmt->execute(); //ok

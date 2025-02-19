@@ -66,7 +66,19 @@ $client_id = $_SESSION['client_id'];
                     <?php
                     //Get latest deposits transactions 
                     $client_id = $_SESSION['client_id'];
-                    $ret = "SELECT * FROM  iB_Transactions  WHERE tr_type = 'Deposit' AND client_id =? ";
+                    $ret = "SELECT 
+    t.tr_id, 
+    t.tr_code, 
+    t.tr_type, 
+    b.account_number, 
+    t.transaction_amt, 
+    COALESCE(c.name, 'N/A') AS client_name, 
+    t.created_at 
+FROM iB_Transactions t
+JOIN ib_bankaccounts b ON t.account_id = b.account_id
+JOIN ib_clients c ON t.client_id = c.client_id
+WHERE t.tr_type = 'Deposit' AND t.client_id = ?
+ ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->bind_param('i', $client_id);
                     $stmt->execute(); //ok

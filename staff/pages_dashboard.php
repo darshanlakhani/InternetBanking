@@ -92,7 +92,7 @@ $stmt->bind_result($acc_amt);
 $stmt->fetch();
 $stmt->close();
 //Get the remaining money in the accounts
-$TotalBalInAccount = ($iB_deposits)  - (($iB_withdrawal) + ($iB_Transfers));
+$TotalBalInAccount = ($iB_deposits) - (($iB_withdrawal) + ($iB_Transfers));
 
 
 //ibank money in the wallet
@@ -265,14 +265,16 @@ $stmt->close();
                     <div class="col-md-6">
                       <div class="chart">
                         <!-- Transaction Donought chart Canvas -->
-                        <div id="PieChart" class="col-md-6" style="height: 400px; max-width: 500px; margin: 0px auto;"></div>
+                        <div id="PieChart" class="col-md-6" style="height: 400px; max-width: 500px; margin: 0px auto;">
+                        </div>
                       </div>
                       <!-- /.chart-responsive -->
                     </div>
                     <hr>
                     <div class="col-md-6">
                       <div class="chart">
-                        <div id="AccountsPerAccountCategories" class="col-md-6" style="height: 400px; max-width: 500px; margin: 0px auto;"></div>
+                        <div id="AccountsPerAccountCategories" class="col-md-6"
+                          style="height: 400px; max-width: 500px; margin: 0px auto;"></div>
                       </div>
                       <!-- /.chart-responsive -->
                     </div>
@@ -343,7 +345,7 @@ $stmt->close();
                       <i class="fas fa-times"></i>
                     </button>
                   </div>
-                </div><!-- Log on to codeastro.com for more projects! -->
+                </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0">
                   <div class="table-responsive">
@@ -360,40 +362,55 @@ $stmt->close();
                       </thead>
                       <tbody>
                         <?php
-                        //Get latest transactions 
-                        $ret = "SELECT * FROM `iB_Transactions` ORDER BY `iB_Transactions`.`created_at` DESC ";
+                        $ret = "SELECT 
+                t.*,  
+                b.account_number, 
+                b.acc_type, 
+                COALESCE(b.acc_name, 'N/A') AS account_owner, 
+                COALESCE(c.name, 'N/A') AS client_name
+            FROM iB_Transactions t
+            LEFT JOIN ib_bankaccounts b ON t.account_id = b.account_id
+            LEFT JOIN ib_clients c ON t.client_id = c.client_id
+            ORDER BY t.created_at DESC";
+
                         $stmt = $mysqli->prepare($ret);
-                        $stmt->execute(); //ok
-                        $res = $stmt->get_result();
-                        $cnt = 1;
-                        while ($row = $res->fetch_object()) {
-                          /* Trim Transaction Timestamp to 
-                            *  User Uderstandable Formart  DD-MM-YYYY :
-                            */
-                          $transTstamp = $row->created_at;
-                          //Perfom some lil magic here
-                          if ($row->tr_type == 'Deposit') {
-                            $alertClass = "<span class='badge badge-success'>$row->tr_type</span>";
-                          } elseif ($row->tr_type == 'Withdrawal') {
-                            $alertClass = "<span class='badge badge-danger'>$row->tr_type</span>";
-                          } else {
-                            $alertClass = "<span class='badge badge-warning'>$row->tr_type</span>";
-                          }
+                        if ($stmt) {
+                          $stmt->execute();
+                          $res = $stmt->get_result();
+                          while ($row = $res->fetch_object()) {
+                          
+
+                            $transTstamp = $row->created_at ?? 'N/A';
+                            $alertClass = "<span class='badge badge-warning'>Unknown</span>";
+
+                            if (isset($row->tr_type)) {
+                              if ($row->tr_type == 'Deposit') {
+                                $alertClass = "<span class='badge badge-success'>$row->tr_type</span>";
+                              } elseif ($row->tr_type == 'Withdrawal') {
+                                $alertClass = "<span class='badge badge-danger'>$row->tr_type</span>";
+                              }
+                            }
+                            ?>
+                            <tr>
+                              <td><?php echo htmlspecialchars($row->tr_code ?? 'N/A'); ?></td>
+                              <td><?php echo htmlspecialchars($row->account_number ?? 'N/A'); ?></td>
+                              <td><?php echo $alertClass; ?></td>
+                              <td>Rs. <?php echo htmlspecialchars($row->transaction_amt ?? '0.00'); ?></td>
+                              <td><?php echo isset($row->client_name) ? htmlspecialchars($row->client_name) : 'N/A'; ?></td>
+
+                              <td>
+                                <?php echo $transTstamp !== 'N/A' ? date("d-M-Y h:i:s A", strtotime($transTstamp)) : 'N/A'; ?>
+                              </td>
+                            </tr>
+                          <?php }
+                        } else {
+                          echo "<tr><td colspan='6'>Error fetching transactions.</td></tr>";
+                        }
                         ?>
-                          <tr>
-                            <td><?php echo $row->tr_code; ?></a></td>
-                            <td><?php echo $row->account_number; ?></td>
-                            <td><?php echo $alertClass; ?></td>
-                            <td>Rs. <?php echo $row->transaction_amt; ?></td>
-                            <td><?php echo $row->client_name; ?></td>
-                            <td><?php echo date("d-M-Y h:m:s ", strtotime($transTstamp)); ?></td>
-                          </tr>
-
-                        <?php } ?>
-
                       </tbody>
+
                     </table>
-                  </div><!-- Log on to codeastro.com for more projects! -->
+                  </div>
                   <!-- /.table-responsive -->
                 </div>
                 <!-- /.card-body -->
@@ -406,22 +423,24 @@ $stmt->close();
             </div>
             <!-- /.col -->
           </div>
-          <!-- /.row -->
+
         </div>
-        <!--/. container-fluid -->
-      </section>
-      <!-- /.content -->
+        <!-- /.row -->
     </div>
-    <!-- /.content-wrapper -->
+    <!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
 
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-      <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
 
-    <!-- Main Footer -->
-    <?php include("dist/_partials/footer.php"); ?>
+  <!-- Main Footer -->
+  <?php include("dist/_partials/footer.php"); ?>
 
   </div>
   <!-- ./wrapper -->
@@ -455,7 +474,7 @@ $stmt->close();
   <script src="plugins/canvasjs.min.js"></script>
   <!--Load Few Charts-->
   <script>
-    window.onload = function() {
+    window.onload = function () {
 
       var Piechart = new CanvasJS.Chart("PieChart", {
         exportEnabled: false,
@@ -473,79 +492,79 @@ $stmt->close();
           toolTipContent: "{name}: <strong>{y}%</strong>",
           indexLabel: "{name} - {y}%",
           dataPoints: [{
-              y: <?php
-                  //return total number of accounts opened under savings acc type
-                  $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type ='Savings'";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->execute();
-                  $stmt->bind_result($savings);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $savings;
-                  ?>,
-              name: "Savings Acc",
-              exploded: true
-            },
+            y: <?php
+            //return total number of accounts opened under savings acc type
+            $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type ='Savings'";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($savings);
+            $stmt->fetch();
+            $stmt->close();
+            echo $savings;
+            ?>,
+            name: "Savings Acc",
+            exploded: true
+          },
 
-            {
-              y: <?php
-                  //return total number of accounts opened under  Retirement  acc type
-                  $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type =' Retirement'  ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->execute();
-                  $stmt->bind_result($Retirement);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Retirement;
-                  ?>,
-              name: " Retirement Acc",
-              exploded: true
-            },
+          {
+            y: <?php
+            //return total number of accounts opened under  Retirement  acc type
+            $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type =' Retirement'  ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Retirement);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Retirement;
+            ?>,
+            name: " Retirement Acc",
+            exploded: true
+          },
 
-            {
-              y: <?php
-                  //return total number of accounts opened under  Recurring deposit  acc type
-                  $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type ='Recurring deposit' ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->execute();
-                  $stmt->bind_result($Recurring);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Recurring;
-                  ?>,
-              name: "Recurring deposit Acc ",
-              exploded: true
-            },
+          {
+            y: <?php
+            //return total number of accounts opened under  Recurring deposit  acc type
+            $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type ='Recurring deposit' ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Recurring);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Recurring;
+            ?>,
+            name: "Recurring deposit Acc ",
+            exploded: true
+          },
 
-            {
-              y: <?php
-                  //return total number of accounts opened under  Fixed Deposit Account deposit  acc type
-                  $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type ='Fixed Deposit Account' ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->execute();
-                  $stmt->bind_result($Fixed);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Fixed;
-                  ?>,
-              name: "Fixed Deposit Acc",
-              exploded: true
-            },
+          {
+            y: <?php
+            //return total number of accounts opened under  Fixed Deposit Account deposit  acc type
+            $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type ='Fixed Deposit Account' ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Fixed);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Fixed;
+            ?>,
+            name: "Fixed Deposit Acc",
+            exploded: true
+          },
 
-            {
-              y: <?php
-                  //return total number of accounts opened under  Current account deposit  acc type
-                  $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type ='Current account' ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->execute();
-                  $stmt->bind_result($Current);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Current;
-                  ?>,
-              name: "Current Acc",
-              exploded: true
-            }
+          {
+            y: <?php
+            //return total number of accounts opened under  Current account deposit  acc type
+            $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type ='Current account' ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Current);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Current;
+            ?>,
+            name: "Current Acc",
+            exploded: true
+          }
           ]
         }]
       });
@@ -566,49 +585,49 @@ $stmt->close();
           toolTipContent: "{name}: <strong>{y}%</strong>",
           indexLabel: "{name} - {y}%",
           dataPoints: [{
-              y: <?php
-                  //return total number of transactions under  Withdrawals
-                  $result = "SELECT count(*) FROM iB_Transactions WHERE  tr_type ='Withdrawal' ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->execute();
-                  $stmt->bind_result($Withdrawals);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Withdrawals;
-                  ?>,
-              name: "Withdrawals",
-              exploded: true
-            },
+            y: <?php
+            //return total number of transactions under  Withdrawals
+            $result = "SELECT count(*) FROM iB_Transactions WHERE  tr_type ='Withdrawal' ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Withdrawals);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Withdrawals;
+            ?>,
+            name: "Withdrawals",
+            exploded: true
+          },
 
-            {
-              y: <?php
-                  //return total number of transactions under  Deposits
-                  $result = "SELECT count(*) FROM iB_Transactions WHERE  tr_type ='Deposit' ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->execute();
-                  $stmt->bind_result($Deposits);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Deposits;
-                  ?>,
-              name: "Deposits",
-              exploded: true
-            },
+          {
+            y: <?php
+            //return total number of transactions under  Deposits
+            $result = "SELECT count(*) FROM iB_Transactions WHERE  tr_type ='Deposit' ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Deposits);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Deposits;
+            ?>,
+            name: "Deposits",
+            exploded: true
+          },
 
-            {
-              y: <?php
-                  //return total number of transactions under  Deposits
-                  $result = "SELECT count(*) FROM iB_Transactions WHERE  tr_type ='Transfer' ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->execute();
-                  $stmt->bind_result($Transfers);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Transfers;
-                  ?>,
-              name: "Transfers",
-              exploded: true
-            }
+          {
+            y: <?php
+            //return total number of transactions under  Deposits
+            $result = "SELECT count(*) FROM iB_Transactions WHERE  tr_type ='Transfer' ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Transfers);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Transfers;
+            ?>,
+            name: "Transfers",
+            exploded: true
+          }
 
           ]
         }]
@@ -618,7 +637,7 @@ $stmt->close();
     }
 
     function explodePie(e) {
-      if (typeof(e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
+      if (typeof (e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
         e.dataSeries.dataPoints[e.dataPointIndex].exploded = true;
       } else {
         e.dataSeries.dataPoints[e.dataPointIndex].exploded = false;

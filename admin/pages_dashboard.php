@@ -373,39 +373,53 @@ $stmt->close();
                           <th>Timestamp</th>
                         </tr>
                       </thead>
-                      <tbody><!-- Log on to codeastro.com for more projects! -->
+                      <tbody>
                         <?php
-                        //Get latest transactions 
-                        $ret = "SELECT * FROM `iB_Transactions` ORDER BY `iB_Transactions`.`created_at` DESC ";
+                        $ret = "SELECT 
+                t.*,  
+                b.account_number, 
+                b.acc_type, 
+                COALESCE(b.acc_name, 'N/A') AS account_owner, 
+                COALESCE(c.name, 'N/A') AS client_name
+            FROM iB_Transactions t
+            LEFT JOIN ib_bankaccounts b ON t.account_id = b.account_id
+            LEFT JOIN ib_clients c ON t.client_id = c.client_id
+            ORDER BY t.created_at DESC";
+
                         $stmt = $mysqli->prepare($ret);
-                        $stmt->execute(); //ok
-                        $res = $stmt->get_result();
-                        $cnt = 1;
-                        while ($row = $res->fetch_object()) {
-                          /* Trim Transaction Timestamp to 
-                            *  User Uderstandable Formart  DD-MM-YYYY :
-                            */
-                          $transTstamp = $row->created_at;
-                          //Perfom some lil magic here
-                          if ($row->tr_type == 'Deposit') {
-                            $alertClass = "<span class='badge badge-success'>$row->tr_type</span>";
-                          } elseif ($row->tr_type == 'Withdrawal') {
-                            $alertClass = "<span class='badge badge-danger'>$row->tr_type</span>";
-                          } else {
-                            $alertClass = "<span class='badge badge-warning'>$row->tr_type</span>";
-                          }
+                        if ($stmt) {
+                          $stmt->execute();
+                          $res = $stmt->get_result();
+                          while ($row = $res->fetch_object()) {
+                          
+
+                            $transTstamp = $row->created_at ?? 'N/A';
+                            $alertClass = "<span class='badge badge-warning'>Unknown</span>";
+
+                            if (isset($row->tr_type)) {
+                              if ($row->tr_type == 'Deposit') {
+                                $alertClass = "<span class='badge badge-success'>$row->tr_type</span>";
+                              } elseif ($row->tr_type == 'Withdrawal') {
+                                $alertClass = "<span class='badge badge-danger'>$row->tr_type</span>";
+                              }
+                            }
+                            ?>
+                            <tr>
+                              <td><?php echo htmlspecialchars($row->tr_code ?? 'N/A'); ?></td>
+                              <td><?php echo htmlspecialchars($row->account_number ?? 'N/A'); ?></td>
+                              <td><?php echo $alertClass; ?></td>
+                              <td>Rs. <?php echo htmlspecialchars($row->transaction_amt ?? '0.00'); ?></td>
+                              <td><?php echo isset($row->client_name) ? htmlspecialchars($row->client_name) : 'N/A'; ?></td>
+
+                              <td>
+                                <?php echo $transTstamp !== 'N/A' ? date("d-M-Y h:i:s A", strtotime($transTstamp)) : 'N/A'; ?>
+                              </td>
+                            </tr>
+                          <?php }
+                        } else {
+                          echo "<tr><td colspan='6'>Error fetching transactions.</td></tr>";
+                        }
                         ?>
-                          <tr>
-                            <td><?php echo $row->tr_code; ?></a></td>
-                            <td><?php echo $row->account_number; ?></td>
-                            <td><?php echo $alertClass; ?></td>
-                            <td>Rs. <?php echo $row->transaction_amt; ?></td>
-                            <td><?php echo $row->client_name; ?></td>
-                            <td><?php echo date("d-M-Y h:m:s ", strtotime($transTstamp)); ?></td>
-                          </tr>
-
-                        <?php } ?>
-
                       </tbody>
                     </table>
                   </div>

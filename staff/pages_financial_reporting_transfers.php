@@ -12,6 +12,7 @@ $staff_id = $_SESSION['staff_id'];
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <?php include("dist/_partials/head.php"); ?>
 <!-- Log on to codeastro.com for more projects! -->
+
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
   <div class="wrapper">
     <!-- Navbar -->
@@ -33,7 +34,8 @@ $staff_id = $_SESSION['staff_id'];
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="pages_financial_reporting_withdrawals.php">Advanced Reporting</a></li>
+                <li class="breadcrumb-item"><a href="pages_financial_reporting_withdrawals.php">Advanced Reporting</a>
+                </li>
                 <li class="breadcrumb-item active">Withdrawal</li>
               </ol>
             </div>
@@ -59,7 +61,7 @@ $staff_id = $_SESSION['staff_id'];
                       <th>Amount</th>
                       <th>Acc. Owner</th>
                       <th>Receiver's Acc.</th>
-                      <th>Receiver</th>
+                      <!-- <th>Receiver</th> -->
                       <th>Timestamp</th>
 
                     </tr>
@@ -69,7 +71,6 @@ $staff_id = $_SESSION['staff_id'];
                     //Get latest deposits transactions 
                     $ret = "SELECT t.tr_id, t.tr_code, t.tr_type, b.account_number, t.transaction_amt, 
        c.name AS client_name, t.receiving_acc_no, t.created_at
-
 FROM ib_transactions t
 JOIN ib_bankaccounts b ON t.account_id = b.account_id
 JOIN ib_clients c ON t.client_id = c.client_id
@@ -81,8 +82,8 @@ WHERE t.tr_type = 'Transfer';
                     $cnt = 1;
                     while ($row = $res->fetch_object()) {
                       /* Trim Transaction Timestamp to 
-                            *  User Uderstandable Formart  DD-MM-YYYY :
-                            */
+                       *  User Uderstandable Formart  DD-MM-YYYY :
+                       */
                       $transTstamp = $row->created_at;
                       //Perfom some lil magic here
                       if ($row->tr_type == 'Deposit') {
@@ -92,7 +93,7 @@ WHERE t.tr_type = 'Transfer';
                       } else {
                         $alertClass = "<span class='badge badge-warning'>$row->tr_type</span>";
                       }
-                    ?>
+                      ?>
 
                       <tr>
                         <td><?php echo $cnt; ?></td>
@@ -104,7 +105,7 @@ WHERE t.tr_type = 'Transfer';
                         <!-- <td><?php echo $row->receiving_acc_holder; ?></td> -->
                         <td><?php echo date("d-M-Y h:m:s ", strtotime($transTstamp)); ?></td>
                       </tr>
-                    <?php $cnt = $cnt + 1;
+                      <?php $cnt = $cnt + 1;
                     } ?>
                     </tfoot>
                 </table>
@@ -143,7 +144,7 @@ WHERE t.tr_type = 'Transfer';
   <script src="dist/js/demo.js"></script>
   <!-- page script -->
   <script>
-    $(function() {
+    $(function () {
       $("#example1").DataTable();
       $('#example2').DataTable({
         "paging": true,
@@ -166,21 +167,21 @@ WHERE t.tr_type = 'Transfer';
       dom: '<"row"<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
       buttons: {
         buttons: [{
-            extend: 'copy',
-            className: 'btn'
-          },
-          {
-            extend: 'csv',
-            className: 'btn'
-          },
-          {
-            extend: 'excel',
-            className: 'btn'
-          },
-          {
-            extend: 'print',
-            className: 'btn'
-          }
+          extend: 'copy',
+          className: 'btn'
+        },
+        {
+          extend: 'csv',
+          className: 'btn'
+        },
+        {
+          extend: 'excel',
+          className: 'btn'
+        },
+        {
+          extend: 'print',
+          className: 'btn'
+        }
         ]
       },
       "oLanguage": {

@@ -3,15 +3,15 @@ session_start();
 include('conf/config.php');
 include('conf/checklogin.php');
 check_login();
-$admin_id = $_SESSION['admin_id'];
+$staff_id = $_SESSION['staff_id'];
 
 ?>
-<!-- Log on to codeastro.com for more projects! -->
+
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <?php include("dist/_partials/head.php"); ?>
-
+<!-- Log on to codeastro.com for more projects! -->
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
   <div class="wrapper">
     <!-- Navbar -->
@@ -28,7 +28,7 @@ $admin_id = $_SESSION['admin_id'];
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>iBanking Advanced Reporting : Deposits</h1>
+              <h1>Report : Deposits</h1>
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
@@ -62,10 +62,16 @@ $admin_id = $_SESSION['admin_id'];
 
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody><!-- Log on to codeastro.com for more projects! -->
                     <?php
                     //Get latest deposits transactions 
-                    $ret = "SELECT * FROM  iB_Transactions  WHERE tr_type = 'Deposit' ";
+                    $ret = "SELECT t.tr_id, t.tr_code, t.tr_type, b.account_number, t.transaction_amt, c.name AS client_name, t.created_at 
+FROM ib_transactions t
+JOIN ib_bankaccounts b ON t.account_id = b.account_id
+JOIN ib_clients c ON t.client_id = c.client_id
+WHERE t.tr_type = 'Deposit';
+";
+            
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute(); //ok
                     $res = $stmt->get_result();
@@ -105,7 +111,7 @@ $admin_id = $_SESSION['admin_id'];
           <!-- /.col -->
         </div>
         <!-- /.row -->
-      </section>
+      </section><!-- Log on to codeastro.com for more projects! -->
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->

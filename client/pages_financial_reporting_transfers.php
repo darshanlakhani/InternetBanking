@@ -28,7 +28,7 @@ $client_id = $_SESSION['client_id'];
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Report : Withdrawal</h1>
+              <h1>Report : Transfer</h1>
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
@@ -59,7 +59,7 @@ $client_id = $_SESSION['client_id'];
                       <th>Amount</th>
                       <th>Acc. Owner</th>
                       <th>Receiver's Acc.</th>
-                      <th>Receiver</th>
+                      <!-- <th>Receiver</th> -->
                       <th>Timestamp</th>
 
                     </tr>
@@ -68,7 +68,20 @@ $client_id = $_SESSION['client_id'];
                     <?php
                     //Get latest deposits transactions 
                     $client_id = $_SESSION['client_id'];
-                    $ret = "SELECT * FROM  iB_Transactions  WHERE tr_type = 'Transfer'AND client_id =? ";
+                    $ret = "SELECT 
+    t.tr_id, 
+    t.tr_code, 
+    t.tr_type, 
+    b.account_number, 
+    t.transaction_amt, 
+    COALESCE(c.name, 'N/A') AS client_name, 
+    t.receiving_acc_no, 
+    t.created_at 
+FROM iB_Transactions t
+JOIN ib_bankaccounts b ON t.account_id = b.account_id
+JOIN ib_clients c ON t.client_id = c.client_id
+WHERE t.tr_type = 'Transfer' AND t.client_id = ?
+ ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->bind_param('i', $client_id);
                     $stmt->execute(); //ok
@@ -96,7 +109,7 @@ $client_id = $_SESSION['client_id'];
                         <td>Rs. <?php echo $row->transaction_amt; ?></td>
                         <td><?php echo $row->client_name; ?></td>
                         <td><?php echo $row->receiving_acc_no; ?></td>
-                        <td><?php echo $row->receiving_acc_holder; ?></td>
+                        <!-- <td><?php echo $row->receiving_acc_holder; ?></td> -->
                         <td><?php echo date("d-M-Y h:m:s ", strtotime($transTstamp)); ?></td>
                       </tr>
                     <?php $cnt = $cnt + 1;

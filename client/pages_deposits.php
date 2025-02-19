@@ -5,7 +5,6 @@ include('conf/checklogin.php');
 check_login();
 $client_id = $_SESSION['client_id'];
 ?>
-<!-- Log on to codeastro.com for more projects! -->
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -32,21 +31,21 @@ $client_id = $_SESSION['client_id'];
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="pages_deposits">iBank Finances</a></li>
+                <li class="breadcrumb-item"><a href="pages_deposits.php">iBank Finances</a></li>
                 <li class="breadcrumb-item active">Deposits</li>
               </ol>
             </div>
           </div>
         </div><!-- /.container-fluid -->
       </section>
-      <!-- Log on to codeastro.com for more projects! -->
+
       <!-- Main content -->
       <section class="content">
         <div class="row">
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Select on any account to deposit money</h3>
+                <h3 class="card-title">Select any account to deposit money</h3>
               </div>
               <div class="card-body">
                 <table id="example1" class="table table-bordered table-hover table-striped">
@@ -63,18 +62,20 @@ $client_id = $_SESSION['client_id'];
                   </thead>
                   <tbody>
                     <?php
-                    //fetch all iB_Accs
+                    // Fetch all iB_Accs with client name
                     $client_id = $_SESSION['client_id'];
-                    $ret = "SELECT * FROM  iB_bankAccounts  WHERE client_id = ?";
+                    $ret = "SELECT a.*, c.name AS client_name 
+                            FROM iB_bankAccounts a 
+                            JOIN iB_clients c ON a.client_id = c.client_id 
+                            WHERE a.client_id = ?";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->bind_param('i', $client_id);
-                    $stmt->execute(); //ok
+                    $stmt->execute();
                     $res = $stmt->get_result();
                     $cnt = 1;
                     while ($row = $res->fetch_object()) {
                       //Trim Timestamp to DD-MM-YYYY : H-M-S
                       $dateOpened = $row->created_at;
-
                     ?>
 
                       <tr>
@@ -90,13 +91,11 @@ $client_id = $_SESSION['client_id'];
                             <i class="fas fa-upload"></i>
                             Deposit Money
                           </a>
-
                         </td>
-
                       </tr>
                     <?php $cnt = $cnt + 1;
                     } ?>
-                    </tfoot>
+                  </tbody>
                 </table>
               </div>
               <!-- /.card-body -->

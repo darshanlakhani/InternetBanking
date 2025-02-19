@@ -7,9 +7,6 @@ check_login();
 if (isset($_POST['transaction'])) {
     $tr_code = $_POST['tr_code'];
     $account_id = $_GET['account_id'];
-    $acc_name = $_POST['acc_name'];
-    $account_number = $_GET['account_number'];
-    $acc_type = $_POST['acc_type'];
     $tr_type = $_POST['tr_type'];
     $tr_status = $_POST['tr_status'];
     $client_id = $_GET['client_id'];
@@ -22,20 +19,20 @@ if (isset($_POST['transaction'])) {
     $notification_details = "$client_name has ";
 
     if ($tr_type == 'Deposit') {
-        $notification_details .= "deposited Rs.$transaction_amt into bank account $account_number";
+        $notification_details .= "deposited Rs.$transaction_amt into bank account ";
     } elseif ($tr_type == 'Withdrawal') {
-        $notification_details .= "withdrawn Rs.$transaction_amt from bank account $account_number";
+        $notification_details .= "withdrawn Rs.$transaction_amt from bank account ";
     }
 
-    // Insert transaction details into the database
-    $query = "INSERT INTO iB_Transactions (tr_code, account_id, acc_name, account_number, acc_type, tr_type, tr_status, client_id, client_name, transaction_amt, client_phone) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+    // Insert transaction details into the database (exclude acc_type)
+    $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, client_id, client_name, transaction_amt, client_phone) VALUES (?,?,?,?,?,?,?,?)";
     $notification_query = "INSERT INTO iB_notifications (notification_details) VALUES (?)";
 
     $stmt = $mysqli->prepare($query);
     $notification_stmt = $mysqli->prepare($notification_query);
 
     $notification_stmt->bind_param('s', $notification_details);
-    $stmt->bind_param('sssssssssss', $tr_code, $account_id, $acc_name, $account_number, $acc_type, $tr_type, $tr_status, $client_id, $client_name, $transaction_amt, $client_phone);
+    $stmt->bind_param('ssssssss', $tr_code, $account_id, $tr_type, $tr_status, $client_id, $client_name, $transaction_amt, $client_phone);
 
     $stmt->execute();
     $notification_stmt->execute();
@@ -57,7 +54,7 @@ if (isset($_POST['transaction'])) {
         <?php include("dist/_partials/sidebar.php"); ?>
         <?php
         $account_id = $_GET['account_id'];
-        $ret = "SELECT * FROM iB_bankAccounts WHERE account_id = ?";
+        $ret = "SELECT a.*, c.name AS client_name, c.phone AS client_phone FROM iB_bankAccounts a JOIN iB_clients c ON a.client_id = c.client_id WHERE a.account_id = ?";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $account_id);
         $stmt->execute();
@@ -75,7 +72,7 @@ if (isset($_POST['transaction'])) {
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
                                     <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="pages_transactions">Transactions</a></li>
+                                    <li class="breadcrumb-item"><a href="pages_transactions.php">Transactions</a></li>
                                     <li class="breadcrumb-item active"><?php echo $row->acc_name; ?></li>
                                 </ol>
                             </div>
@@ -111,10 +108,6 @@ if (isset($_POST['transaction'])) {
                                                 <div class="col-md-4 form-group">
                                                     <label for="exampleInputPassword1">Account Number</label>
                                                     <input type="text" readonly value="<?php echo $row->account_number; ?>" name="account_number" required class="form-control">
-                                                </div>
-                                                <div class="col-md-4 form-group">
-                                                    <label for="exampleInputEmail1">Account Type | Category</label>
-                                                    <input type="text" readonly name="acc_type" value="<?php echo $row->acc_type; ?>" required class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row">

@@ -3,10 +3,10 @@ session_start();
 include('conf/config.php');
 include('conf/checklogin.php');
 check_login();
-$admin_id = $_SESSION['admin_id'];
+$staff_id = $_SESSION['staff_id'];
 
 ?>
-<!-- Log on to codeastro.com for more projects! -->
+
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -28,7 +28,7 @@ $admin_id = $_SESSION['admin_id'];
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>iBanking Advanced Reporting : Withdrawal</h1>
+              <h1>Report : Withdrawal</h1>
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
@@ -65,7 +65,10 @@ $admin_id = $_SESSION['admin_id'];
                   <tbody>
                     <?php
                     //Get latest deposits transactions 
-                    $ret = "SELECT * FROM  iB_Transactions  WHERE tr_type = 'Withdrawal' ";
+                    $ret = "SELECT t.tr_id, t.tr_code, t.tr_type, b.account_number, t.transaction_amt, c.name AS client_name, t.created_at FROM ib_transactions t
+JOIN ib_bankaccounts b ON t.account_id = b.account_id
+JOIN ib_clients c ON t.client_id = c.client_id
+WHERE t.tr_type = 'Withdrawal'; ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute(); //ok
                     $res = $stmt->get_result();
