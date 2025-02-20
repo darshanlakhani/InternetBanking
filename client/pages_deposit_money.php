@@ -25,15 +25,15 @@ if (isset($_POST['transaction'])) {
     }
 
     // Insert transaction details into the database (exclude acc_type)
-    $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, client_id, client_name, transaction_amt, client_phone) VALUES (?,?,?,?,?,?,?,?)";
+    $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, client_id, transaction_amt) VALUES (?,?,?,?,?,?)";
+
     $notification_query = "INSERT INTO iB_notifications (notification_details) VALUES (?)";
 
     $stmt = $mysqli->prepare($query);
     $notification_stmt = $mysqli->prepare($notification_query);
 
     $notification_stmt->bind_param('s', $notification_details);
-    $stmt->bind_param('ssssssss', $tr_code, $account_id, $tr_type, $tr_status, $client_id, $client_name, $transaction_amt, $client_phone);
-
+    $stmt->bind_param('sssssi', $tr_code, $account_id, $tr_type, $tr_status, $client_id, $transaction_amt);
     $stmt->execute();
     $notification_stmt->execute();
 
@@ -154,3 +154,4 @@ if (isset($_POST['transaction'])) {
     </script>
 </body>
 </html>
+

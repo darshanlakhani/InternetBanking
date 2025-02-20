@@ -1,4 +1,4 @@
-    <?php
+<?php
 session_start();
 include('conf/config.php');
 include('conf/checklogin.php');

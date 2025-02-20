@@ -65,7 +65,15 @@ $client_id = $_SESSION['client_id'];
 
 
         $account_id = $_GET['account_id'];
-        $ret = "SELECT * FROM  iB_bankAccounts WHERE account_id =? ";
+        $ret = "SELECT a.*, 
+       c.name ,
+       c.client_number, 
+       c.email AS client_email, 
+       c.phone AS client_phone
+FROM iB_bankAccounts a 
+JOIN iB_clients c ON a.client_id = c.client_id 
+WHERE a.account_id = ?
+ ";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $account_id);
         $stmt->execute(); //ok
@@ -90,14 +98,14 @@ $client_id = $_SESSION['client_id'];
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1><?php echo $row->client_name; ?> Account Balance</h1>
+                                <h1><?php echo $row->name; ?> Account Balance</h1>
                             </div>
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
                                     <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="pages_balance_enquiries.php">Finances</a></li>
                                     <li class="breadcrumb-item"><a href="pages_balance_enquiries.php">Balances</a></li>
-                                    <li class="breadcrumb-item active"><?php echo $row->client_name; ?> Accs</li>
+                                    <li class="breadcrumb-item active"><?php echo $row->name; ?> Accs</li>
                                 </ol>
                             </div>
                         </div>
@@ -115,7 +123,7 @@ $client_id = $_SESSION['client_id'];
                                     <div class="row">
                                         <div class="col-12">
                                             <h4>
-                                                <i class="fas fa-bank"></i> iBanking Corporation Balance Enquiry
+                                                <i class="fas fa-bank"></i> DigiBankX Balance Enquiry
                                                 <small class="float-right">Date: <?php echo date('d/m/Y'); ?></small>
                                             </h4>
                                         </div>
@@ -126,11 +134,11 @@ $client_id = $_SESSION['client_id'];
                                         <div class="col-sm-6 invoice-col">
                                             Account Holder
                                             <address>
-                                                <strong><?php echo $row->client_name; ?></strong><br>
+                                                <strong><?php echo $row->name; ?></strong><br>
                                                 <?php echo $row->client_number; ?><br>
                                                 <?php echo $row->client_email; ?><br>
                                                 Phone: <?php echo $row->client_phone; ?><br>
-                                                ID No: <?php echo $row->client_national_id; ?>
+                                                <!-- ID No: <?php echo $row->client_national_id; ?> -->
                                             </address>
                                         </div>
                                         <!-- /.col -->

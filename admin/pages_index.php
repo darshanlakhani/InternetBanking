@@ -6,27 +6,31 @@ error_reporting(E_ALL);
 session_start();
 include('conf/config.php'); //get configuration file
 if (isset($_POST['login'])) {
-  $email = $_POST['email'];
-  $password = sha1(md5($_POST['password'])); //double encrypt to increase security
-  $stmt = $mysqli->prepare("SELECT email, password, admin_id FROM iB_admin WHERE email=? AND password=?"); //sql to log in user
+  $email = trim($_POST['email']);
+  $password = trim($_POST['password']); // Do NOT hash here!
+
+  // Get hashed password from database
+  $stmt = $mysqli->prepare("SELECT admin_id, password FROM iB_admin WHERE email=?");
   if ($stmt === false) {
-    die('Error: ' . htmlspecialchars($mysqli->error));
+      die('Error: ' . htmlspecialchars($mysqli->error));
   }
-  $stmt->bind_param('ss', $email, $password); //bind fetched parameters
-  $stmt->execute(); //execute bind
-  if ($stmt === false) {
-    die('Error: ' . htmlspecialchars($stmt->error));
-  }
-  $stmt->bind_result($email, $password, $admin_id); //bind result
-  $rs = $stmt->fetch();
-  if ($rs) { //if its successful
-    $_SESSION['admin_id'] = $admin_id; //assign session to admin id
-    header("location:pages_dashboard.php");
-    exit();
+  
+  $stmt->bind_param('s', $email);
+  $stmt->execute();
+  $stmt->bind_result($admin_id, $db_password); // Fetch hashed password
+  $stmt->fetch();
+  $stmt->close();
+
+  // Verify password
+  if ($db_password && password_verify($password, $db_password)) {
+      $_SESSION['admin_id'] = $admin_id;
+      header("location: pages_dashboard.php");
+      exit();
   } else {
-    $err = "Access Denied. Please Check Your Credentials";
+      $err = "Access Denied. Please Check Your Credentials";
   }
 }
+
 
 /* Persist System Settings On Brand */
 $ret = "SELECT * FROM `iB_SystemSettings` ";
@@ -84,7 +88,7 @@ while ($auth = $res->fetch_object()) {
               <!-- /.col -->
             </div>
             <p class="mb-1">
-                    <a href="pages_reset_pwd.php">I forgot my password</a>
+                    <a href="forget_password.php">I forgot my password</a>
                 </p>
           </form>
 

@@ -394,7 +394,7 @@ $stmt->close();
                           
 
                             $transTstamp = $row->created_at ?? 'N/A';
-                            $alertClass = "<span class='badge badge-warning'>Unknown</span>";
+                            $alertClass = "<span class='badge badge-warning'>Transfer</span>";
 
                             if (isset($row->tr_type)) {
                               if ($row->tr_type == 'Deposit') {

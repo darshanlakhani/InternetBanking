@@ -3,8 +3,7 @@ session_start();
 include('conf/config.php');
 include('conf/checklogin.php');
 check_login();
-$staff_id = $_SESSION['staff_id'];
-//register new account
+$client_id = $_SESSION['client_id'];
 
 if (isset($_POST['withdrawal'])) {
     $tr_code = $_POST['tr_code'];
@@ -12,14 +11,19 @@ if (isset($_POST['withdrawal'])) {
     $acc_name = $_POST['acc_name'];
     $account_number = $_GET['account_number'];
     $acc_type = $_POST['acc_type'];
+    //$acc_amount  = $_POST['acc_amount'];
     $tr_type  = $_POST['tr_type'];
     $tr_status = $_POST['tr_status'];
     $client_id  = $_GET['client_id'];
     $client_name  = $_POST['client_name'];
-    
+   
     $transaction_amt = $_POST['transaction_amt'];
     $client_phone = $_POST['client_phone'];
-    $notification_details = "$client_name Has Withdrawn Rs.$transaction_amt From Bank Account $account_number";
+    //$acc_new_amt = $_POST['acc_new_amt'];
+    //$notification_details = $_POST['notification_details'];
+    $notification_details = "$client_name Has Withdrawn Rs. $transaction_amt From Bank Account $account_number";
+
+  
 
     $result = "SELECT SUM(transaction_amt) FROM  iB_Transactions  WHERE account_id=?";
     $stmt = $mysqli->prepare($result);
@@ -29,17 +33,24 @@ if (isset($_POST['withdrawal'])) {
     $stmt->fetch();
     $stmt->close();
 
+
     if ($transaction_amt > $amt) {
-        $err = "You Do Not Have Sufficient Funds In Your Account. Your Existing Amount is Rs.$amt";
+        $err = "You Do Not Have Sufficient Funds In Your Account. Your Existing Amount is Rs. $amt";
     } else {
-        $query = "INSERT INTO iB_Transactions (tr_code, account_id, acc_name, account_number, acc_type,  tr_type, tr_status, client_id, client_name, transaction_amt, client_phone) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+
+
+        //Insert Captured information to a database table
+        $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, client_id, transaction_amt) VALUES (?,?,?,?,?,?)";
+
         $notification = "INSERT INTO  iB_notifications (notification_details) VALUES (?)";
         $stmt = $mysqli->prepare($query);
         $notification_stmt = $mysqli->prepare($notification);
-        $rc = $stmt->bind_param('sssssssssss', $tr_code, $account_id, $acc_name, $account_number, $acc_type, $tr_type, $tr_status, $client_id, $client_name, $transaction_amt, $client_phone);
+        //bind parameters
+        $rc =   $stmt->bind_param('sssssi', $tr_code, $account_id, $tr_type, $tr_status, $client_id, $transaction_amt);
         $rc = $notification_stmt->bind_param('s', $notification_details);
         $stmt->execute();
         $notification_stmt->execute();
+        //declare a variable which will be passed to alert function
         if ($stmt && $notification_stmt) {
             $success = "Funds Withdrawn";
         } else {
@@ -50,9 +61,10 @@ if (isset($_POST['withdrawal'])) {
 ?>
 <!DOCTYPE html>
 <html>
-<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<?php include("dist/_partials/head.php"); ?>
-
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <?php include("dist/_partials/head.php"); ?>
+</head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
     <div class="wrapper">
         <!-- Navbar -->
@@ -65,13 +77,10 @@ if (isset($_POST['withdrawal'])) {
         <!-- Content Wrapper. Contains page content -->
         <?php
         $account_id = $_GET['account_id'];
-        $ret = "SELECT a.*, c.name AS name, c.phone AS phone 
-                FROM iB_bankAccounts a 
-                JOIN iB_clients c ON a.client_id = c.client_id 
-                WHERE a.account_id = ? ";
+        $ret = "SELECT a.*, c.name AS client_name, c.phone AS client_phone FROM iB_bankAccounts a JOIN iB_clients c ON a.client_id = c.client_id WHERE a.account_id = ? ";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $account_id);
-        $stmt->execute();
+        $stmt->execute(); //ok
         $res = $stmt->get_result();
         $cnt = 1;
         while ($row = $res->fetch_object()) {
@@ -108,17 +117,25 @@ if (isset($_POST['withdrawal'])) {
                                         <h3 class="card-title">Fill All Fields</h3>
                                     </div>
                                     <!-- form start -->
-                                    <form method="post" enctype="multipart/form-data" role="form" name="withdrawForm" onsubmit="return validateForm()">
+                                    <form method="post" enctype="multipart/form-data" role="form">
                                         <div class="card-body">
+
+                                            <!-- Display error message -->
+                                            <?php if (isset($err)) { ?>
+                                                <div class="alert alert-danger" role="alert">
+                                                    <?php echo $err; ?>
+                                                </div>
+                                            <?php } ?>
+
                                             <div class="row">
                                                 <div class=" col-md-4 form-group">
                                                     <label for="exampleInputEmail1">Client Name</label>
-                                                    <input type="text" readonly name="client_name" value="<?php echo $row->name; ?>" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" readonly name="client_name" value="<?php echo $row->client_name; ?>" required class="form-control" id="exampleInputEmail1">
                                                 </div>
-
+                                               
                                                 <div class=" col-md-8 form-group">
                                                     <label for="exampleInputEmail1">Client Phone Number</label>
-                                                    <input type="text" readonly name="client_phone" value="<?php echo $row->phone; ?>" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" readonly name="client_phone" value="<?php echo $row->client_phone; ?>" required class="form-control" id="exampleInputEmail1">
                                                 </div>
                                             </div>
 
@@ -141,6 +158,7 @@ if (isset($_POST['withdrawal'])) {
                                                 <div class=" col-md-6 form-group">
                                                     <label for="exampleInputEmail1">Transaction Code</label>
                                                     <?php
+                                                    //PHP function to generate random account number
                                                     $length = 20;
                                                     $_transcode =  substr(str_shuffle('0123456789QWERgfdsazxcvbnTYUIOqwertyuioplkjhmPASDFGHJKLMNBVCXZ'), 1, $length);
                                                     ?>
@@ -149,8 +167,7 @@ if (isset($_POST['withdrawal'])) {
 
                                                 <div class=" col-md-6 form-group">
                                                     <label for="exampleInputPassword1">Amount Withdraw(Rs.) </label>
-                                                    <input type="number" name="transaction_amt" required class="form-control" id="exampleInputEmail1" min="0">
-                                                    <small class="text-danger" id="negativeError" style="display: none;">Please enter a positive number.</small>
+                                                    <input type="text" name="transaction_amt" required class="form-control" id="transaction_amt">
                                                 </div>
                                                 <div class=" col-md-4 form-group" style="display:none">
                                                     <label for="exampleInputPassword1">Transaction Type</label>
@@ -160,22 +177,15 @@ if (isset($_POST['withdrawal'])) {
                                                     <label for="exampleInputPassword1">Transaction Status</label>
                                                     <input type="text" name="tr_status" value="Success " required class="form-control" id="exampleInputEmail1">
                                                 </div>
+
                                             </div>
+
                                         </div>
                                         <!-- /.card-body -->
                                         <div class="card-footer">
                                             <button type="submit" name="withdrawal" class="btn btn-success">Withdraw Funds</button>
                                         </div>
                                     </form>
-                                    <!-- Display error message if set -->
-                                    <?php if (isset($err)) : ?>
-                                        <div class="alert alert-danger"><?php echo $err; ?></div>
-                                    <?php endif; ?>
-
-                                    <!-- Display success message if set -->
-                                    <?php if (isset($success)) : ?>
-                                        <div class="alert alert-success"><?php echo $success; ?></div>
-                                    <?php endif; ?>
                                 </div>
                                 <!-- /.card -->
                             </div><!-- /.container-fluid -->
@@ -204,20 +214,21 @@ if (isset($_POST['withdrawal'])) {
     <script src="dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="dist/js/demo.js"></script>
-    <script>
-        function validateForm() {
-            var amount = document.forms["withdrawForm"]["transaction_amt"].value;
-            if (amount < 0) {
-                document.getElementById('negativeError').style.display = 'block';
-                return false;
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector("form").addEventListener("submit", function(event) {
+                var transaction_amt = document.getElementById("transaction_amt").value;
+                if (!isValidNumber(transaction_amt)) {
+                    alert("Please enter a valid positive number for Amount Withdraw.");
+                    event.preventDefault();
+                }
+            });
+            
+            function isValidNumber(value) {
+                return !isNaN(parseFloat(value)) && isFinite(value) && parseFloat(value) >= 0;
             }
-        }
-    </script>
-    <script>
-        $(document).ready(function() {
-            bsCustomFileInput.init();
         });
     </script>
+    
 </body>
-
 </html>

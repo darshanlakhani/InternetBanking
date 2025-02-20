@@ -24,7 +24,10 @@ $staff_id = $_SESSION['staff_id'];
         <!-- Content Wrapper. Contains page content -->
         <?php
         $client_id = $_GET['client_id'];
-        $ret = "SELECT * FROM  iB_clients WHERE client_id =? ";
+        $ret = "SELECT a.*, c.name
+        FROM iB_bankAccounts a 
+        JOIN iB_clients c ON a.client_id = c.client_id 
+        WHERE a.client_id = ? ";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $client_id);
         $stmt->execute(); //ok
@@ -79,7 +82,10 @@ $staff_id = $_SESSION['staff_id'];
                                             <?php
                                             //fetch all iB_Accs Which belongs to selected client
                                             $client_id = $_GET['client_id'];
-                                            $ret = "SELECT * FROM  iB_bankAccounts WHERE client_id = ?";
+                                            $ret = "SELECT a.*, c.name
+                                            FROM iB_bankAccounts a 
+                                            JOIN iB_clients c ON a.client_id = c.client_id 
+                                            WHERE a.client_id = ? ";
                                             $stmt = $mysqli->prepare($ret);
                                             $stmt->bind_param('i', $client_id);
                                             $stmt->execute(); //ok
@@ -97,7 +103,7 @@ $staff_id = $_SESSION['staff_id'];
                                                     <td><?php echo $row->account_number; ?></td>
                                                     <td><?php echo $row->acc_rates; ?>%</td>
                                                     <td><?php echo $row->acc_type; ?></td>
-                                                    <td><?php echo $row->client_name; ?></td>
+                                                    <td><?php echo $row->name; ?></td>
                                                     <td><?php echo date("d-M-Y", strtotime($dateOpened)); ?></td>
                                                     <td>
                                                         <a class="btn btn-success btn-sm" href="pages_check_client_acc_balance.php?account_id=<?php echo $row->account_id; ?>&acccount_number=<?php echo $row->account_number; ?>">

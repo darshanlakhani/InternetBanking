@@ -65,7 +65,10 @@ $client_id = $_SESSION['client_id'];
                     <?php
                     //fetch all iB_Accs
                     $client_id = $_SESSION['client_id'];
-                    $ret = "SELECT * FROM  iB_bankAccounts WHERE client_id =? ";
+                    $ret = "SELECT a.*, c.name AS client_name 
+                            FROM iB_bankAccounts a 
+                            JOIN iB_clients c ON a.client_id = c.client_id 
+                            WHERE a.client_id = ? ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->bind_param('i', $client_id);
                     $stmt->execute(); //ok

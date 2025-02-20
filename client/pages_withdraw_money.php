@@ -23,11 +23,7 @@ if (isset($_POST['withdrawal'])) {
     //$notification_details = $_POST['notification_details'];
     $notification_details = "$client_name Has Withdrawn Rs. $transaction_amt From Bank Account $account_number";
 
-    /*
-    * The below code will handle the withdrawal process that is first it 
-      checks if the selected bank account has any amount and secondly, the money withdrawn should 
-      not be greater than the existing amount.
-    */
+  
 
     $result = "SELECT SUM(transaction_amt) FROM  iB_Transactions  WHERE account_id=?";
     $stmt = $mysqli->prepare($result);
@@ -44,12 +40,13 @@ if (isset($_POST['withdrawal'])) {
 
 
         //Insert Captured information to a database table
-        $query = "INSERT INTO iB_Transactions (tr_code, account_id, acc_name, account_number, acc_type,  tr_type, tr_status, client_id, client_name, transaction_amt, client_phone) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, client_id, transaction_amt) VALUES (?,?,?,?,?,?)";
+
         $notification = "INSERT INTO  iB_notifications (notification_details) VALUES (?)";
         $stmt = $mysqli->prepare($query);
         $notification_stmt = $mysqli->prepare($notification);
         //bind parameters
-        $rc = $stmt->bind_param('sssssssssss', $tr_code, $account_id, $acc_name, $account_number, $acc_type, $tr_type, $tr_status, $client_id, $client_name, $transaction_amt, $client_phone);
+        $rc =   $stmt->bind_param('sssssi', $tr_code, $account_id, $tr_type, $tr_status, $client_id, $transaction_amt);
         $rc = $notification_stmt->bind_param('s', $notification_details);
         $stmt->execute();
         $notification_stmt->execute();
@@ -80,7 +77,7 @@ if (isset($_POST['withdrawal'])) {
         <!-- Content Wrapper. Contains page content -->
         <?php
         $account_id = $_GET['account_id'];
-        $ret = "SELECT * FROM  iB_bankAccounts WHERE account_id = ? ";
+        $ret = "SELECT a.*, c.name AS client_name, c.phone AS client_phone FROM iB_bankAccounts a JOIN iB_clients c ON a.client_id = c.client_id WHERE a.account_id = ? ";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $account_id);
         $stmt->execute(); //ok
