@@ -77,6 +77,38 @@ if (isset($_POST['withdrawal'])) {
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <?php include("dist/_partials/head.php"); ?>
+    <?php if (isset($success)) { ?>
+    <script>
+        setTimeout(function() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '<?php echo $success; ?>',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    setTimeout(function() {
+                        window.location.href = "pages_transfer_money.php"; 
+                    }, 500); // Delay added for better visibility
+                }
+            });
+        }, 100);
+    </script>
+<?php } ?>
+
+
+<?php if (isset($err)) { ?>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: '<?php echo $err; ?>',
+            confirmButtonText: 'Try Again'
+        });
+    </script>
+<?php } ?>
+
+
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
     <div class="wrapper">

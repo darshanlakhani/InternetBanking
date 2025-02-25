@@ -85,7 +85,7 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of  iBank initial cash->balances
-$client_id = $_SESSION['client_id'];
+//$client_id = $_SESSION['client_id'];
 $result = "SELECT SUM(acc_amount) FROM iB_bankAccounts";
 $stmt = $mysqli->prepare($result);
 // $stmt->bind_param('i', $client_id);

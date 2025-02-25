@@ -85,50 +85,24 @@ if (isset($_POST['deposit'])) {
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <?php include("dist/_partials/head.php"); ?>
 <?php if (isset($success)) { ?>
-            <!--This code for injecting success alert-->
-            <script>
-                setTimeout(function() {
-                        swal("Success", "<?php echo $success; ?>", "success");
-                    },
-                    100);
-            </script>
-
-        <?php } ?>
-
-        <?php if (isset($err)) { ?>
-            <!--This code for injecting error alert-->
-            <script>
-                setTimeout(function() {
-                        swal("Failed", "<?php echo $err; ?>", "error");
-                    },
-                    100);
-            </script>
-
-        <?php } ?>
-        <?php if (isset($info)) { ?>
-            <!--This code for injecting info alert-->
-            <script>
-                setTimeout(function() {
-                        swal("Success", "<?php echo $info; ?>", "warning");
-                    },
-                    100);
-            </script>
-
-        <?php } ?>
-        <?php if (isset($success)) { ?>
     <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: '<?php echo $success; ?>',
-            confirmButtonText: 'OK'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = "pages_transfer_money.php"; // Redirect after closing modal
-            }
-        });
+        setTimeout(function() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '<?php echo $success; ?>',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    setTimeout(function() {
+                        window.location.href = "pages_transfer_money.php"; 
+                    }, 500); // Delay added for better visibility
+                }
+            });
+        }, 100);
     </script>
 <?php } ?>
+
 
 <?php if (isset($err)) { ?>
     <script>
