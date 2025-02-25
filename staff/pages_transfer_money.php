@@ -85,34 +85,34 @@ if (isset($_POST['deposit'])) {
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <?php include("dist/_partials/head.php"); ?>
 <?php if (isset($success)) { ?>
-    <script>
-        setTimeout(function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: '<?php echo $success; ?>',
-                confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    setTimeout(function() {
-                        window.location.href = "pages_transfer_money.php"; 
-                    }, 500); // Delay added for better visibility
-                }
-            });
-        }, 100);
-    </script>
+<script>
+setTimeout(function() {
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: '<?php echo $success; ?>',
+        confirmButtonText: 'OK'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            setTimeout(function() {
+                window.location.href = "pages_transfers.php";
+            }, 500); // Delay added for better visibility
+        }
+    });
+}, 100);
+</script>
 <?php } ?>
 
 
 <?php if (isset($err)) { ?>
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: '<?php echo $err; ?>',
-            confirmButtonText: 'Try Again'
-        });
-    </script>
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Oops!',
+    text: '<?php echo $err; ?>',
+    confirmButtonText: 'Try Again'
+});
+</script>
 <?php } ?>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
@@ -139,105 +139,105 @@ if (isset($_POST['deposit'])) {
         while ($row = $res->fetch_object()) {
 
             ?>
-            <div class="content-wrapper">
-                <!-- Content Header (Page header) -->
-                <section class="content-header">
-                    <div class="container-fluid">
-                        <div class="row mb-2">
-                            <div class="col-sm-6">
-                                <h1>Transfer Money</h1>
-                            </div>
-                            <div class="col-sm-6">
-                                <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="pages_transfer_money.php">Finances</a></li>
-                                    <li class="breadcrumb-item"><a href="pages_transfer_money.php">Transfer</a></li>
-                                    <li class="breadcrumb-item active"><?php echo $row->acc_name; ?></li>
-                                </ol>
-                            </div>
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Transfer Money</h1>
                         </div>
-                    </div><!-- /.container-fluid -->
-                </section>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="pages_transfer_money.php">Finances</a></li>
+                                <li class="breadcrumb-item"><a href="pages_transfer_money.php">Transfer</a></li>
+                                <li class="breadcrumb-item active"><?php echo $row->acc_name; ?></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
 
-                <!-- Main content -->
-                <section class="content">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <!-- left column -->
-                            <div class="col-md-12">
-                                <!-- general form elements -->
-                                <div class="card card-purple">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Fill All Fields</h3>
-                                    </div>
-                                    <!-- form start -->
-                                    <form method="post" enctype="multipart/form-data" role="form">
-                                        <div class="card-body">
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <!-- left column -->
+                        <div class="col-md-12">
+                            <!-- general form elements -->
+                            <div class="card card-purple">
+                                <div class="card-header">
+                                    <h3 class="card-title">Fill All Fields</h3>
+                                </div>
+                                <!-- form start -->
+                                <form method="post" enctype="multipart/form-data" role="form">
+                                    <div class="card-body">
 
-                                            <div class="row">
-                                                <div class=" col-md-4 form-group">
-                                                    <label for="exampleInputEmail1">Client Name</label>
-                                                    <input type="text" readonly name="client_name"
-                                                        value="<?php echo $row->name; ?>" required class="form-control"
-                                                        id="exampleInputEmail1">
-                                                </div>
-
-                                                <div class=" col-md-8 form-group">
-                                                    <label for="exampleInputEmail1">Client Phone Number</label>
-                                                    <input type="text" readonly name="client_phone"
-                                                        value="<?php echo $row->phone; ?>" required class="form-control"
-                                                        id="exampleInputEmail1">
-                                                </div>
+                                        <div class="row">
+                                            <div class=" col-md-4 form-group">
+                                                <label for="exampleInputEmail1">Client Name</label>
+                                                <input type="text" readonly name="client_name"
+                                                    value="<?php echo $row->name; ?>" required class="form-control"
+                                                    id="exampleInputEmail1">
                                             </div>
 
-                                            <div class="row">
-                                                <div class=" col-md-4 form-group">
-                                                    <label for="exampleInputEmail1">Account Name</label>
-                                                    <input type="text" readonly name="acc_name"
-                                                        value="<?php echo $row->acc_name; ?>" required class="form-control"
-                                                        id="exampleInputEmail1">
-                                                </div>
-                                                <div class=" col-md-4 form-group">
-                                                    <label for="exampleInputPassword1">Account Number</label>
-                                                    <input type="text" readonly value="<?php echo $row->account_number; ?>"
-                                                        name="account_number" required class="form-control"
-                                                        id="exampleInputEmail1">
-                                                </div>
-                                                <div class=" col-md-4 form-group">
-                                                    <label for="exampleInputEmail1">Account Type | Category</label>
-                                                    <input type="text" readonly name="acc_type"
-                                                        value="<?php echo $row->acc_type; ?>" required class="form-control"
-                                                        id="exampleInputEmail1">
-                                                </div>
+                                            <div class=" col-md-8 form-group">
+                                                <label for="exampleInputEmail1">Client Phone Number</label>
+                                                <input type="text" readonly name="client_phone"
+                                                    value="<?php echo $row->phone; ?>" required class="form-control"
+                                                    id="exampleInputEmail1">
                                             </div>
+                                        </div>
 
-                                            <div class="row">
-                                                <div class=" col-md-6 form-group">
-                                                    <label for="exampleInputEmail1">Transaction Code</label>
-                                                    <?php
+                                        <div class="row">
+                                            <div class=" col-md-4 form-group">
+                                                <label for="exampleInputEmail1">Account Name</label>
+                                                <input type="text" readonly name="acc_name"
+                                                    value="<?php echo $row->acc_name; ?>" required class="form-control"
+                                                    id="exampleInputEmail1">
+                                            </div>
+                                            <div class=" col-md-4 form-group">
+                                                <label for="exampleInputPassword1">Account Number</label>
+                                                <input type="text" readonly value="<?php echo $row->account_number; ?>"
+                                                    name="account_number" required class="form-control"
+                                                    id="exampleInputEmail1">
+                                            </div>
+                                            <div class=" col-md-4 form-group">
+                                                <label for="exampleInputEmail1">Account Type | Category</label>
+                                                <input type="text" readonly name="acc_type"
+                                                    value="<?php echo $row->acc_type; ?>" required class="form-control"
+                                                    id="exampleInputEmail1">
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class=" col-md-6 form-group">
+                                                <label for="exampleInputEmail1">Transaction Code</label>
+                                                <?php
                                                     //PHP function to generate random account number
                                                     $length = 20;
                                                     $_transcode = substr(str_shuffle('0123456789QWERgfdsazxcvbnTYUIOqwertyuioplkjhmPASDFGHJKLMNBVCXZ'), 1, $length);
                                                     ?>
-                                                    <input type="text" name="tr_code" readonly
-                                                        value="<?php echo $_transcode; ?>" required class="form-control"
-                                                        id="exampleInputEmail1">
-                                                </div>
-
-                                                <div class=" col-md-6 form-group">
-                                                    <label for="exampleInputPassword1">Amount Transfered(Rs.)</label>
-                                                    <input type="text" name="transaction_amt" required class="form-control"
-                                                        id="exampleInputEmail1">
-                                                </div>
+                                                <input type="text" name="tr_code" readonly
+                                                    value="<?php echo $_transcode; ?>" required class="form-control"
+                                                    id="exampleInputEmail1">
                                             </div>
 
-                                            <div class="row">
-                                                <div class="col-md-4 form-group">
-                                                    <label for="receiving_acc_no">Receiving Account Number</label>
-                                                    <select name="receiving_acc_no" id="receiving_acc_no" required
-                                                        class="form-control">
-                                                        <option value="">Select Receiving Account</option>
-                                                        <?php
+                                            <div class=" col-md-6 form-group">
+                                                <label for="exampleInputPassword1">Amount Transfered(Rs.)</label>
+                                                <input type="text" name="transaction_amt" required class="form-control"
+                                                    id="exampleInputEmail1">
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label for="receiving_acc_no">Receiving Account Number</label>
+                                                <select name="receiving_acc_no" id="receiving_acc_no" required
+                                                    class="form-control">
+                                                    <option value="">Select Receiving Account</option>
+                                                    <?php
                                                         // Fetch all bank accounts except the sender's own account
                                                         $ret = "SELECT account_number, acc_name FROM ib_bankaccounts WHERE account_id != ?";
                                                         $stmt = $mysqli->prepare($ret);
@@ -248,48 +248,48 @@ if (isset($_POST['deposit'])) {
                                                             echo "<option value='{$row->account_number}'>{$row->account_number}</option>";
                                                         }
                                                         ?>
-                                                    </select>
-                                                </div>
+                                                </select>
+                                            </div>
 
-                                                <div class="col-md-4 form-group">
-                                                    <label for="receiving_acc_name">Receiving Account Name</label>
-                                                    <input type="text" name="receiving_acc_name" id="receiving_acc_name"
-                                                        readonly required class="form-control">
-                                                </div>
+                                            <div class="col-md-4 form-group">
+                                                <label for="receiving_acc_name">Receiving Account Name</label>
+                                                <input type="text" name="receiving_acc_name" id="receiving_acc_name"
+                                                    readonly required class="form-control">
+                                            </div>
 
 
 
-                                                <!-- <div class=" col-md-4 form-group">
+                                            <!-- <div class=" col-md-4 form-group">
                                                     <label for="exampleInputPassword1">Receiving Account Holder</label>
                                                     <input type="text" name="receiving_acc_holder" required class="form-control" id="AccountHolder">
                                                 </div> -->
 
-                                                <div class=" col-md-4 form-group" style="display:none">
-                                                    <label for="exampleInputPassword1">Transaction Type</label>
-                                                    <input type="text" name="tr_type" value="Transfer" required
-                                                        class="form-control" id="exampleInputEmail1">
-                                                </div>
-                                                <div class=" col-md-4 form-group" style="display:none">
-                                                    <label for="exampleInputPassword1">Transaction Status</label>
-                                                    <input type="text" name="tr_status" value="Success " required
-                                                        class="form-control" id="exampleInputEmail1">
-                                                </div>
-
+                                            <div class=" col-md-4 form-group" style="display:none">
+                                                <label for="exampleInputPassword1">Transaction Type</label>
+                                                <input type="text" name="tr_type" value="Transfer" required
+                                                    class="form-control" id="exampleInputEmail1">
+                                            </div>
+                                            <div class=" col-md-4 form-group" style="display:none">
+                                                <label for="exampleInputPassword1">Transaction Status</label>
+                                                <input type="text" name="tr_status" value="Success " required
+                                                    class="form-control" id="exampleInputEmail1">
                                             </div>
 
                                         </div>
-                                        <!-- /.card-body -->
-                                        <div class="card-footer">
-                                            <button type="submit" name="deposit" class="btn btn-success">Transfer
-                                                Funds</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <!-- /.card -->
-                            </div><!-- /.container-fluid -->
-                </section>
-                <!-- /.content -->
-            </div>
+
+                                    </div>
+                                    <!-- /.card-body -->
+                                    <div class="card-footer">
+                                        <button type="submit" name="deposit" class="btn btn-success">Transfer
+                                            Funds</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.card -->
+                        </div><!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+        </div>
         <?php } ?>
         <!-- /.content-wrapper -->
         <?php include("dist/_partials/footer.php"); ?>
@@ -313,49 +313,48 @@ if (isset($_POST['deposit'])) {
     <!-- AdminLTE for demo purposes -->
     <script src="dist/js/demo.js"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            bsCustomFileInput.init();
+    $(document).ready(function() {
+        bsCustomFileInput.init();
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelector("form").addEventListener("submit", function(event) {
+            var senderAccount = "<?php echo $account_number; ?>"; // Fetch sender's account number
+            var receivingAccount = document.getElementById("receiving_acc_no").value;
+
+            if (receivingAccount === senderAccount) {
+                alert("You cannot transfer money to your own account.");
+                event.preventDefault();
+            }
         });
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelector("form").addEventListener("submit", function (event) {
-                var senderAccount = "<?php echo $account_number; ?>"; // Fetch sender's account number
-                var receivingAccount = document.getElementById("receiving_acc_no").value;
-
-                if (receivingAccount === senderAccount) {
-                    alert("You cannot transfer money to your own account.");
-                    event.preventDefault();
-                }
-            });
-        });
-       
-
-
+    });
     </script>
 
     <script>
-         $(document).ready(function () {
-            $("#receiving_acc_no").change(function () {
-                var accountNumber = $(this).val();
+    $(document).ready(function() {
+        $("#receiving_acc_no").change(function() {
+            var accountNumber = $(this).val();
 
-                if (accountNumber) {
-                    $.ajax({
-                        type: "POST",
-                        url: "get_account_name.php",
-                        data: { account_number: accountNumber },
-                        dataType: "json",
-                        success: function (response) {
-                            $("#receiving_acc_name").val(response.acc_name);
-                        },
-                        error: function () {
-                            alert("Failed to fetch account details.");
-                        }
-                    });
-                } 
-                // else {
-                //     $("#receiving_acc_name").val(""); // Clear the field if no account is selected
-                // }
-            });
+            if (accountNumber) {
+                $.ajax({
+                    type: "POST",
+                    url: "get_account_name.php",
+                    data: {
+                        account_number: accountNumber
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        $("#receiving_acc_name").val(response.acc_name);
+                    },
+                    error: function() {
+                        alert("Failed to fetch account details.");
+                    }
+                });
+            }
+            // else {
+            //     $("#receiving_acc_name").val(""); // Clear the field if no account is selected
+            // }
         });
+    });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>

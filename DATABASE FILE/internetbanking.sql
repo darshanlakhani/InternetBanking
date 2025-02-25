@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Feb 25, 2025 at 05:57 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Host: localhost
+-- Generation Time: Feb 25, 2025 at 08:59 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -119,13 +119,13 @@ CREATE TABLE `ib_bankaccounts` (
 --
 
 INSERT INTO `ib_bankaccounts` (`account_id`, `acc_name`, `account_number`, `acc_type`, `acc_rates`, `acc_status`, `acc_amount`, `client_id`, `created_at`, `is_active`) VALUES
-(14, 'Hari pandya', '357146928', 'Current account ', '20', 'Active', 9683.00, 5, '2025-02-23 14:23:39.678725', 1),
-(15, 'Arin Gabani', '287359614', 'Savings ', '20', 'Active', 2077600.00, 8, '2025-02-23 17:12:42.547506', 1),
+(14, 'Hari pandya', '357146928', 'Current account ', '20', 'Active', 70361.00, 5, '2025-02-25 07:56:15.621750', 1),
+(15, 'Arin Gabani', '287359614', 'Savings ', '20', 'Active', 2004000.00, 8, '2025-02-25 07:55:18.818226', 1),
 (16, 'Vraj Gujrati', '705239816', ' Retirement ', '10', 'Active', 10339.00, 6, '2025-02-23 14:25:50.735691', 1),
-(19, 'Jenil Dhola', '864790325', 'Current account  ', '19', 'Active', 0.00, 10, '2025-02-23 16:41:24.508968', 1),
-(20, 'kirtan moradiya', '730459816', 'Recurring deposit', '15', 'Active', 904140.00, 10, '2025-02-23 17:12:36.118257', 1),
-(23, 'Yashpal Chavda', '573608192', 'Savings', '15', 'Active', 56486.00, 11, '2025-02-23 17:12:42.546719', 1),
-(24, 'Rohit Dhull', '529714806', 'Salary Account', '6.5', 'Active', 10112.00, 11, '2025-02-23 14:19:57.863262', 1);
+(19, 'Jenil Dhola', '864790325', 'Current account  ', '19', 'Active', 2000.00, 10, '2025-02-25 07:55:01.008708', 1),
+(20, 'kirtan moradiya', '730459816', 'Recurring deposit', '15', 'Active', 921340.00, 10, '2025-02-25 07:55:18.819070', 1),
+(23, 'Yashpal Chavda', '573608192', 'Savings', '15', 'Active', 26486.00, 11, '2025-02-25 06:05:18.844339', 1),
+(24, 'Rohit Dhull', '529714806', 'Salary Account', '6.5', 'Active', 9312.00, 11, '2025-02-25 07:55:09.613763', 1);
 
 -- --------------------------------------------------------
 
@@ -228,7 +228,33 @@ INSERT INTO `ib_notifications` (`notification_id`, `notification_details`, `crea
 (67, 'Jenil Dhola has deposited Rs. 10000 into bank account 24', '2025-02-23 12:30:06.881084', 1),
 (68, 'A deposit of Rs. 1000000 has been made into Bank Account 287359614', '2025-02-23 12:44:19.052409', 1),
 (69, 'A deposit of Rs. 1000000 has been made into Bank Account 287359614', '2025-02-23 12:47:10.886948', 1),
-(70, 'A deposit of Rs. 100000 has been made into Bank Account 573608192', '2025-02-23 17:12:16.964737', 1);
+(70, 'A deposit of Rs. 100000 has been made into Bank Account 573608192', '2025-02-23 17:12:16.964737', 1),
+(71, 'Harry Den has withdrawn Rs. 222 from Bank Account 357146928', '2025-02-25 06:49:22.746139', 1),
+(72, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:49:26.454014', 1),
+(73, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:49:30.749347', 1),
+(74, 'Harry Den has withdrawn Rs. 5000 from Bank Account 357146928', '2025-02-25 06:49:34.124488', 1),
+(75, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:49:46.156092', 1),
+(76, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:49:50.267011', 1),
+(77, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:49:53.830524', 1),
+(78, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:51:09.058123', 1),
+(79, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:51:15.887096', 1),
+(80, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:51:21.204757', 1),
+(81, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:51:37.327515', 1),
+(82, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:53:10.349008', 1),
+(83, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:53:17.204486', 1),
+(84, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 06:53:55.687697', 1),
+(86, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 07:27:00.944058', 1),
+(87, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 07:29:45.407215', 1),
+(88, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 07:31:05.870439', 1),
+(89, 'Harry Den has withdrawn Rs. 1200 from Bank Account 357146928', '2025-02-25 07:33:22.520159', 1),
+(90, 'Harry Den has withdrawn Rs. 1200 from Bank Account 357146928', '2025-02-25 07:34:30.657984', 1),
+(91, 'Arin Gabani has withdrawn Rs. 18000 from Bank Account 287359614', '2025-02-25 07:35:25.769536', 1),
+(92, 'Arin Gabani has withdrawn Rs. 18000 from Bank Account 287359614', '2025-02-25 07:35:56.496813', 1),
+(93, 'Arin Gabani has withdrawn Rs. 18000 from Bank Account 287359614', '2025-02-25 07:38:06.903347', 1),
+(94, 'Arin Gabani has withdrawn Rs. 1200 from Bank Account 287359614', '2025-02-25 07:51:10.546682', 1),
+(95, 'Harry Den has withdrawn Rs. 100 from Bank Account 357146928', '2025-02-25 07:52:08.535846', 1),
+(96, 'A deposit of Rs. 18000 has been made into Bank Account 357146928', '2025-02-25 07:56:06.177748', 1),
+(97, 'A deposit of Rs. 52000 has been made into Bank Account 357146928', '2025-02-25 07:56:15.624178', 1);
 
 -- --------------------------------------------------------
 
@@ -255,7 +281,7 @@ CREATE TABLE `ib_staff` (
 --
 
 INSERT INTO `ib_staff` (`staff_id`, `name`, `staff_number`, `phone`, `email`, `password`, `sex`, `profile_pic`, `is_active`, `otp`, `otp_expiry`) VALUES
-(3, 'Jay Shah', 'iBank-STAFF-6785', '7049757429', 'dharmika192@gmail.com', '$2y$10$Kh5mefahn9r3uUbthwxXi.XuCSOV9Y5Nsk8SrhT82uFR15pufqYz6', 'Male', 'jay.jpg', 1, '719130', '2025-02-20 10:48:33'),
+(3, 'Jay Shah', 'iBank-STAFF-6785', '7049757429', 'dharmika192@gmail.com', '$2y$10$Kh5mefahn9r3uUbthwxXi.XuCSOV9Y5Nsk8SrhT82uFR15pufqYz6', 'Male', '', 1, '719130', '2025-02-20 10:48:33'),
 (4, 'Rahul Dravid', 'iBank-STAFF-6724', '9265460571', 'wall@gmail.com', 'd95d3bbedb4dcba5a8e891968853002354b028e9', 'Male', 'rahul.jpg', 1, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -293,7 +319,7 @@ CREATE TABLE `ib_transactions` (
   `tr_status` varchar(200) NOT NULL,
   `client_id` int(10) UNSIGNED NOT NULL,
   `transaction_amt` varchar(200) NOT NULL,
-  `receiving_acc_no` varchar(200) NOT NULL,
+  `receiving_acc_no` varchar(200) DEFAULT NULL,
   `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6),
   `is_active` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -321,7 +347,39 @@ INSERT INTO `ib_transactions` (`tr_id`, `tr_code`, `account_id`, `tr_type`, `tr_
 (115, 'DZiuj4F1pw5OEUSTvoC3', 14, 'Transfer', 'Success', 5, '100', '730459816', '2025-02-23 14:23:39.000000', 1),
 (120, '2yXC9BRlKaMUjquiSGdN', 23, 'Deposit', 'Success', 11, '100000', '', '2025-02-23 17:12:16.964154', 1),
 (121, '9oAhuYv0sZIFJe2EWOkN', 23, 'Transfer', 'Success', 11, '4000', '730459816', '2025-02-23 17:12:36.000000', 1),
-(122, 'wzKmyf1F38cYgPTj7H2R', 23, 'Transfer', 'Success', 11, '78000', '287359614', '2025-02-23 17:12:42.000000', 1);
+(122, 'wzKmyf1F38cYgPTj7H2R', 23, 'Transfer', 'Success', 11, '78000', '287359614', '2025-02-23 17:12:42.000000', 1),
+(123, 'BqdH0EAstU2F6L1MgZuK', 14, 'Withdrawal', 'Success', 5, '222', NULL, '2025-02-25 06:49:22.744531', 1),
+(124, 'D6Kadpc3qVZTPuX5veyj', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:49:26.452823', 1),
+(125, 'fASsyFwtn3Vk2U8zcBrY', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:49:30.749126', 1),
+(126, 'NHfBG9jUsmzVohAD2Xg1', 14, 'Withdrawal', 'Success', 5, '5000', NULL, '2025-02-25 06:49:34.124232', 1),
+(127, 'fASsyFwtn3Vk2U8zcBrY', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:49:46.155632', 1),
+(128, '7kb6ryQwBIs5Y4hCEOUo', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:49:50.266794', 1),
+(129, '376rajymil4kbHQM9VxB', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:49:53.829640', 1),
+(130, '376rajymil4kbHQM9VxB', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:51:09.057776', 1),
+(131, '376rajymil4kbHQM9VxB', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:51:15.886412', 1),
+(132, '376rajymil4kbHQM9VxB', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:51:21.204215', 1),
+(133, '376rajymil4kbHQM9VxB', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:51:37.326988', 1),
+(134, '376rajymil4kbHQM9VxB', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:53:10.348573', 1),
+(135, '376rajymil4kbHQM9VxB', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:53:17.203085', 1),
+(136, 'fASsyFwtn3Vk2U8zcBrY', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:53:55.687404', 1),
+(137, 'fASsyFwtn3Vk2U8zcBrY', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 06:53:57.534846', 1),
+(138, 'MjYvzOZbg2n93oh5xBJG', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 07:27:00.942325', 1),
+(139, 'X95YxNhuHbSkvDo0pzmq', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 07:29:45.406100', 1),
+(140, 'X95YxNhuHbSkvDo0pzmq', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 07:31:05.869613', 1),
+(141, 'QbI8dyB49G5HXW2ju1Nt', 14, 'Withdrawal', 'Success', 5, '1200', NULL, '2025-02-25 07:33:22.519599', 1),
+(142, 'QbI8dyB49G5HXW2ju1Nt', 14, 'Withdrawal', 'Success', 5, '1200', NULL, '2025-02-25 07:34:30.657476', 1),
+(143, 'OJGSDurUIQlo8F9q42Xp', 15, 'Withdrawal', 'Success', 8, '18000', NULL, '2025-02-25 07:35:25.769176', 1),
+(144, 'OJGSDurUIQlo8F9q42Xp', 15, 'Withdrawal', 'Success', 8, '18000', NULL, '2025-02-25 07:35:56.496047', 1),
+(145, 'OJGSDurUIQlo8F9q42Xp', 15, 'Withdrawal', 'Success', 8, '18000', NULL, '2025-02-25 07:38:06.902375', 1),
+(146, 'eFv5sWty7h2z6HN4VpfI', 15, 'Withdrawal', 'Success', 8, '1200', NULL, '2025-02-25 07:51:10.544527', 1),
+(147, '1mds6QFGXI8CoB2afuTi', 14, 'Withdrawal', 'Success', 5, '100', NULL, '2025-02-25 07:52:08.535054', 1),
+(148, 'w7t3buIPxXLBYz69NWl2', 15, 'Transfer', 'Success', 8, '1200', '864790325', '2025-02-25 07:53:05.000000', 1),
+(149, 'blA6BnF4Tzk3x10KyJpu', 20, 'Transfer', 'Success', 10, '800', '529714806', '2025-02-25 07:54:40.000000', 1),
+(150, 'AUm0v2wPWYG9Sl1yHOFV', 24, 'Transfer', 'Success', 11, '800', '864790325', '2025-02-25 07:55:01.000000', 1),
+(151, 'HJ74caPU2iXYfbkDL6Eo', 24, 'Transfer', 'Success', 11, '800', '287359614', '2025-02-25 07:55:09.000000', 1),
+(152, 'hQR23ziWvyEAeUZmtMrN', 15, 'Transfer', 'Success', 8, '18000', '730459816', '2025-02-25 07:55:18.000000', 1),
+(153, 'jJKdkWTtnmchzbHQXg8Y', 14, 'Deposit', 'Success', 5, '18000', NULL, '2025-02-25 07:56:06.176874', 1),
+(154, 'OtXrJaKoAG6uvDR37BeM', 14, 'Deposit', 'Success', 5, '52000', NULL, '2025-02-25 07:56:15.623547', 1);
 
 -- --------------------------------------------------------
 
@@ -546,7 +604,7 @@ ALTER TABLE `ib_nominees`
 -- AUTO_INCREMENT for table `ib_notifications`
 --
 ALTER TABLE `ib_notifications`
-  MODIFY `notification_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `notification_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- AUTO_INCREMENT for table `ib_staff`
@@ -564,7 +622,7 @@ ALTER TABLE `ib_systemsettings`
 -- AUTO_INCREMENT for table `ib_transactions`
 --
 ALTER TABLE `ib_transactions`
-  MODIFY `tr_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
+  MODIFY `tr_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=155;
 
 --
 -- AUTO_INCREMENT for table `loan_applications`

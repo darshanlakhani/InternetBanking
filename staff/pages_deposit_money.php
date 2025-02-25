@@ -73,34 +73,34 @@ if (isset($_POST['transaction'])) {
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <?php include("dist/_partials/head.php"); ?>
 <?php if (isset($success)) { ?>
-    <script>
-        setTimeout(function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: '<?php echo $success; ?>',
-                confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    setTimeout(function() {
-                        window.location.href = "pages_transfer_money.php"; 
-                    }, 500); // Delay added for better visibility
-                }
-            });
-        }, 100);
-    </script>
+<script>
+setTimeout(function() {
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: '<?php echo $success; ?>',
+        confirmButtonText: 'OK'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            setTimeout(function() {
+                window.location.href = "pages_deposits.php";
+            }, 500); // Delay added for better visibility
+        }
+    });
+}, 100);
+</script>
 <?php } ?>
 
 
 <?php if (isset($err)) { ?>
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: '<?php echo $err; ?>',
-            confirmButtonText: 'Try Again'
-        });
-    </script>
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Oops!',
+    text: '<?php echo $err; ?>',
+    confirmButtonText: 'Try Again'
+});
+</script>
 <?php } ?>
 
 
@@ -118,81 +118,90 @@ if (isset($_POST['transaction'])) {
         $cnt = 1;
         while ($row = $res->fetch_object()) {
         ?>
-            <div class="content-wrapper">
-                <section class="content-header">
-                    <div class="container-fluid">
-                        <div class="row mb-2">
-                            <div class="col-sm-6">
-                                <h1>Deposit Money</h1>
-                            </div>
-                            <div class="col-sm-6">
-                                <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="pages_transactions.php">Transactions</a></li>
-                                    <li class="breadcrumb-item active"><?php echo $row->acc_name; ?></li>
-                                </ol>
-                            </div>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Deposit Money</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="pages_transactions.php">Transactions</a></li>
+                                <li class="breadcrumb-item active"><?php echo $row->acc_name; ?></li>
+                            </ol>
                         </div>
                     </div>
-                </section>
-                <section class="content">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card card-purple">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Fill All Fields</h3>
-                                    </div>
-                                    <form method="post" enctype="multipart/form-data" role="form">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-md-4 form-group">
-                                                    <label for="exampleInputEmail1">Client Name</label>
-                                                    <input type="text" readonly name="client_name" value="<?php echo $row->client_name; ?>" required class="form-control">
-                                                </div>
-                                                
-                                                <div class="col-md-8 form-group">
-                                                    <label for="exampleInputEmail1">Client Phone Number</label>
-                                                    <input type="text" readonly name="client_phone" value="<?php echo $row->client_phone; ?>" required class="form-control">
-                                                </div>
+                </div>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-purple">
+                                <div class="card-header">
+                                    <h3 class="card-title">Fill All Fields</h3>
+                                </div>
+                                <form method="post" enctype="multipart/form-data" role="form">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label for="exampleInputEmail1">Client Name</label>
+                                                <input type="text" readonly name="client_name"
+                                                    value="<?php echo $row->client_name; ?>" required
+                                                    class="form-control">
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-4 form-group">
-                                                    <label for="exampleInputEmail1">Account Name</label>
-                                                    <input type="text" readonly name="acc_name" value="<?php echo $row->acc_name; ?>" required class="form-control">
-                                                </div>
-                                                <div class="col-md-4 form-group">
-                                                    <label for="exampleInputPassword1">Account Number</label>
-                                                    <input type="text" readonly value="<?php echo $row->account_number; ?>" name="account_number" required class="form-control">
-                                                </div>
+
+                                            <div class="col-md-8 form-group">
+                                                <label for="exampleInputEmail1">Client Phone Number</label>
+                                                <input type="text" readonly name="client_phone"
+                                                    value="<?php echo $row->client_phone; ?>" required
+                                                    class="form-control">
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6 form-group">
-                                                    <label for="exampleInputEmail1">Transaction Code</label>
-                                                    <?php
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label for="exampleInputEmail1">Account Name</label>
+                                                <input type="text" readonly name="acc_name"
+                                                    value="<?php echo $row->acc_name; ?>" required class="form-control">
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label for="exampleInputPassword1">Account Number</label>
+                                                <input type="text" readonly value="<?php echo $row->account_number; ?>"
+                                                    name="account_number" required class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="exampleInputEmail1">Transaction Code</label>
+                                                <?php
                                                     $length = 20;
                                                     $_transcode =  substr(str_shuffle('0123456789QWERgfdsazxcvbnTYUIOqwertyuioplkjhmPASDFGHJKLMNBVCXZ'), 1, $length);
                                                     ?>
-                                                    <input type="text" name="tr_code" readonly value="<?php echo $_transcode; ?>" required class="form-control">
-                                                </div>
-                                                <div class="col-md-6 form-group">
-                                                    <label for="exampleInputPassword1">Deposit Amount(Rs.)</label>
-                                                    <input type="number" min="0" name="transaction_amt" required class="form-control">
-                                                </div>
+                                                <input type="text" name="tr_code" readonly
+                                                    value="<?php echo $_transcode; ?>" required class="form-control">
                                             </div>
-                                            <input type="hidden" name="tr_type" value="Deposit">
-                                            <input type="hidden" name="tr_status" value="Success">
+                                            <div class="col-md-6 form-group">
+                                                <label for="exampleInputPassword1">Deposit Amount(Rs.)</label>
+                                                <input type="number" min="0" name="transaction_amt" required
+                                                    class="form-control">
+                                            </div>
                                         </div>
-                                        <div class="card-footer">
-                                            <button type="submit" name="transaction" class="btn btn-success">Deposit Funds</button>
-                                        </div>
-                                    </form>
-                                </div>
+                                        <input type="hidden" name="tr_type" value="Deposit">
+                                        <input type="hidden" name="tr_status" value="Success">
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" name="transaction" class="btn btn-success">Deposit
+                                            Funds</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
-                </section>
-            </div>
+                </div>
+            </section>
+        </div>
         <?php } ?>
         <?php include("dist/_partials/footer.php"); ?>
         <aside class="control-sidebar control-sidebar-dark">
@@ -204,24 +213,21 @@ if (isset($_POST['transaction'])) {
     <script src="dist/js/adminlte.min.js"></script>
     <script src="dist/js/demo.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            bsCustomFileInput.init();
-        });
+    $(document).ready(function() {
+        bsCustomFileInput.init();
+    });
 
-        document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
         document.querySelector("form").addEventListener("submit", function(event) {
             var transaction_amt = parseFloat(document.getElementById("transaction_amt").value);
 
             if (isNaN(transaction_amt) || transaction_amt <= 0) {
                 alert("Please enter a valid positive number for the deposit amount.");
                 event.preventDefault();
-                    }
-                });
+            }
         });
-
-
-
+    });
     </script>
 </body>
-</html>
 
+</html>
