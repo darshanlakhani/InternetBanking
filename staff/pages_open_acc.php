@@ -56,7 +56,7 @@ $staff_id = $_SESSION['staff_id'];
                       <th>#</th>
                       <th>Name</th>
                       <th>Client Number</th>
-                      <th>ID No.</th>
+                      <!-- <th>ID No.</th> -->
                       <th>Contact</th>
                       <th>Email</th>
                       <th>Address</th>
@@ -79,7 +79,7 @@ $staff_id = $_SESSION['staff_id'];
                         <td><?php echo $cnt; ?></td>
                         <td><?php echo $row->name; ?></td>
                         <td><?php echo $row->client_number; ?></td>
-                        <td><?php echo $row->national_id; ?></td>
+                        <!-- <td><?php echo $row->national_id; ?></td> -->
                         <td><?php echo $row->phone; ?></td>
                         <td><?php echo $row->email; ?></td>
                         <td><?php echo $row->address; ?></td>

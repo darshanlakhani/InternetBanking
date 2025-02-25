@@ -28,11 +28,12 @@
     $stmt->execute(); //ok
     $res = $stmt->get_result();
     while ($sys = $res->fetch_object()) {
-  ?>
+      ?>
 
       <a href="pages_dashboard.php" class="brand-link">
-        <img src="../admin/dist/img/<?php echo $sys->sys_logo;?>" alt="iBanking Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light"><?php echo $sys->sys_name;?></span>
+        <img src="../admin/dist/img/<?php echo $sys->sys_logo; ?>" alt="iBanking Logo"
+          class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light"><?php echo $sys->sys_name; ?></span>
       </a>
 
       <!-- Sidebar -->
@@ -130,17 +131,17 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                    <a href="apply_loan.php" class="nav-link">
-                      <i class="fas fa-cart-arrow-down nav-icon"></i>
-                      <p>Loan Applications</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                  <a href="loan_status.php" class="nav-link">
-                      <i class="fa fa-file nav-icon"></i>
-                       <p>My Loan Status</p>
+                  <a href="apply_loan.php" class="nav-link">
+                    <i class="fas fa-cart-arrow-down nav-icon"></i>
+                    <p>Loan Applications</p>
                   </a>
-              </li>
+                </li>
+                <li class="nav-item">
+                  <a href="loan_status.php" class="nav-link">
+                    <i class="fa fa-file nav-icon"></i>
+                    <p>My Loan Status</p>
+                  </a>
+                </li>
 
                 <li class="nav-item">
                   <a href="pages_view_client_bank_acc.php" class="nav-link">
@@ -151,6 +152,31 @@
               </ul>
             </li>
             <!-- ./Finances -->
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Nominee 
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="client_add_nominee.php" class="nav-link">
+                    <i class="fas fa-user-plus nav-icon"></i>
+                    <p>Add Nominee</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="client_nominees.php" class="nav-link">
+                    <i class="fas fa-users-cog nav-icon"></i>
+                    <p>Show Nominees</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Nominees -->
 
             <li class="nav-header">Advanced Modules</li>
             <li class="nav-item">
@@ -193,6 +219,7 @@
                 </li>
               </ul>
             </li>
+
             <!-- ./ End financial Reporting-->
 
             <!-- Log Out -->
@@ -200,7 +227,7 @@
               <a href="pages_feedback.php" class="nav-link">
                 <i class="nav-icon fas fa-comments"></i>
                 <p>
-                  Feedback 
+                  Feedback
                 </p>
               </a>
             </li>
@@ -218,7 +245,7 @@
         <!-- /.sidebar-menu -->
       </div>
       <!-- /.sidebar -->
-</aside>
-<?php
+    </aside>
+    <?php
     }
   } ?>

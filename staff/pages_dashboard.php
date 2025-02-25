@@ -85,15 +85,14 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of  iBank initial cash->balances
-$result = "SELECT SUM(transaction_amt) FROM iB_Transactions ";
+$client_id = $_SESSION['client_id'];
+$result = "SELECT SUM(acc_amount) FROM iB_bankAccounts";
 $stmt = $mysqli->prepare($result);
+// $stmt->bind_param('i', $client_id);
 $stmt->execute();
-$stmt->bind_result($acc_amt);
+$stmt->bind_result($TotalBalInAccount);
 $stmt->fetch();
 $stmt->close();
-//Get the remaining money in the accounts
-$TotalBalInAccount = ($iB_deposits) - (($iB_withdrawal) + ($iB_Transfers));
-
 
 //ibank money in the wallet
 $result = "SELECT SUM(transaction_amt) FROM iB_Transactions ";

@@ -11,54 +11,67 @@ if (isset($_POST['withdrawal'])) {
     $acc_name = $_POST['acc_name'];
     $account_number = $_GET['account_number'];
     $acc_type = $_POST['acc_type'];
-    //$acc_amount  = $_POST['acc_amount'];
     $tr_type  = $_POST['tr_type'];
     $tr_status = $_POST['tr_status'];
     $client_id  = $_GET['client_id'];
     $client_name  = $_POST['client_name'];
-   
     $transaction_amt = $_POST['transaction_amt'];
     $client_phone = $_POST['client_phone'];
-    //$acc_new_amt = $_POST['acc_new_amt'];
-    //$notification_details = $_POST['notification_details'];
-    $notification_details = "$client_name Has Withdrawn Rs. $transaction_amt From Bank Account $account_number";
+    
+    // Notification message
+    $notification_details = "$client_name has withdrawn Rs. $transaction_amt from Bank Account $account_number";
 
-  
+    // Start database transaction
+    $mysqli->autocommit(FALSE);
 
-    $result = "SELECT SUM(transaction_amt) FROM  iB_Transactions  WHERE account_id=?";
-    $stmt = $mysqli->prepare($result);
+    // Fetch current account balance
+    $query = "SELECT acc_amount FROM ib_bankaccounts WHERE account_id = ?";
+    $stmt = $mysqli->prepare($query);
     $stmt->bind_param('i', $account_id);
     $stmt->execute();
-    $stmt->bind_result($amt);
+    $stmt->bind_result($acc_amount);
     $stmt->fetch();
     $stmt->close();
 
-
-    if ($transaction_amt > $amt) {
-        $err = "You Do Not Have Sufficient Funds In Your Account. Your Existing Amount is Rs. $amt";
+    // Check if there are sufficient funds before withdrawal
+    if ($transaction_amt <= 0) {
+        $err = "Invalid withdrawal amount! Please enter a positive amount.";
+    } elseif ($transaction_amt > $acc_amount) {
+        $err = "Insufficient Balance! Your Current Balance is Rs. $acc_amount";
     } else {
-
-
-        //Insert Captured information to a database table
-        $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, client_id, transaction_amt) VALUES (?,?,?,?,?,?)";
-
-        $notification = "INSERT INTO  iB_notifications (notification_details) VALUES (?)";
-        $stmt = $mysqli->prepare($query);
-        $notification_stmt = $mysqli->prepare($notification);
-        //bind parameters
-        $rc =   $stmt->bind_param('sssssi', $tr_code, $account_id, $tr_type, $tr_status, $client_id, $transaction_amt);
-        $rc = $notification_stmt->bind_param('s', $notification_details);
+        // Deduct withdrawal amount from account balance
+        $new_balance = $acc_amount - $transaction_amt;
+        $update_balance_query = "UPDATE ib_bankaccounts SET acc_amount = ? WHERE account_id = ?";
+        $stmt = $mysqli->prepare($update_balance_query);
+        $stmt->bind_param('di', $new_balance, $account_id);
         $stmt->execute();
-        $notification_stmt->execute();
-        //declare a variable which will be passed to alert function
-        if ($stmt && $notification_stmt) {
-            $success = "Funds Withdrawn";
-        } else {
-            $err = "Please Try Again Or Try Later";
-        }
+        $stmt->close();
+
+        // Insert transaction record
+        $insert_transaction = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, client_id, transaction_amt) 
+                               VALUES (?, ?, 'Withdrawal', 'Success', ?, ?)";
+        $stmt = $mysqli->prepare($insert_transaction);
+        $stmt->bind_param('ssii', $tr_code, $account_id, $client_id, $transaction_amt);
+        $stmt->execute();
+        $stmt->close();
+
+        // Insert notification
+        $notification = "INSERT INTO iB_notifications (notification_details) VALUES (?)";
+        $stmt = $mysqli->prepare($notification);
+        $stmt->bind_param('s', $notification_details);
+        $stmt->execute();
+        $stmt->close();
+
+        // Commit transaction if everything is successful
+        $mysqli->commit();
+        $success = "Funds Withdrawn Successfully!";
     }
+
+    // Enable autocommit again
+    $mysqli->autocommit(TRUE);
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -216,18 +229,20 @@ if (isset($_POST['withdrawal'])) {
     <script src="dist/js/demo.js"></script>
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
-            document.querySelector("form").addEventListener("submit", function(event) {
-                var transaction_amt = document.getElementById("transaction_amt").value;
-                if (!isValidNumber(transaction_amt)) {
-                    alert("Please enter a valid positive number for Amount Withdraw.");
-                    event.preventDefault();
-                }
-            });
-            
-            function isValidNumber(value) {
-                return !isNaN(parseFloat(value)) && isFinite(value) && parseFloat(value) >= 0;
-            }
-        });
+    document.querySelector("form").addEventListener("submit", function(event) {
+        var transaction_amt = parseFloat(document.getElementById("transaction_amt").value);
+        var acc_balance = <?php echo $acc_amount; ?>; // Get balance from PHP
+
+        if (isNaN(transaction_amt) || transaction_amt <= 0) {
+            alert("Please enter a valid positive number for withdrawal.");
+            event.preventDefault();
+        } else if (transaction_amt > acc_balance) {
+            alert("Insufficient Balance! Your Current Balance is Rs. " + acc_balance);
+            event.preventDefault();
+        }
+    });
+});
+
     </script>
     
 </body>

@@ -33,7 +33,8 @@ while ($sys = $res->fetch_object()) {
         <link rel="icon" type="image/png" sizes="16x16" href="../admin/dist/img/<?php echo $sys->sys_logo; ?>">
         <!-- Data Tables CSS -->
         <link rel="stylesheet" type="text/css" href="plugins/datatable/custom_dt_html5.css">
-
+        
+        
         <!--Inject SWAL-->
         <?php if (isset($success)) { ?>
             <!--This code for injecting success alert-->
@@ -60,17 +61,18 @@ while ($sys = $res->fetch_object()) {
             <!--This code for injecting info alert-->
             <script>
                 setTimeout(function() {
-                        swal("Success", "<?php echo $info; ?>", "warning");
-                    },
-                    100);
+                    swal("Success", "<?php echo $info; ?>", "warning");
+                },
+                100);
             </script>
 
-        <?php } ?>
-        <script>
-            function getiBankAccs(val)
+<?php } ?>
 
-            {
-                $.ajax({
+<script>
+    function getiBankAccs(val)
+
+    {
+        $.ajax({
                     //get account rates
                     type: "POST",
                     url: "pages_ajax.php",

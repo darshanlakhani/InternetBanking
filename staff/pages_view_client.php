@@ -8,7 +8,7 @@ $staff_id = $_SESSION['staff_id'];
 if (isset($_POST['update_client_account'])) {
     //update client
     $name = $_POST['name'];
-    $national_id = $_POST['national_id'];
+    // $national_id = $_POST['national_id'];
     $client_number = $_GET['client_number'];
     $phone = $_POST['phone'];
     $email = $_POST['email'];
@@ -19,10 +19,10 @@ if (isset($_POST['update_client_account'])) {
     move_uploaded_file($_FILES["profile_pic"]["tmp_name"], "../admin/dist/img/" . $_FILES["profile_pic"]["name"]);
 
     //Insert Captured information to a database table
-    $query = "UPDATE  iB_clients SET name=?, national_id=?, phone=?, email=?, address=?, profile_pic=? WHERE client_number = ?";
+    $query = "UPDATE  iB_clients SET name=?, phone=?, email=?, address=?, profile_pic=? WHERE client_number = ?";
     $stmt = $mysqli->prepare($query);
     //bind paramaters
-    $rc = $stmt->bind_param('sssssss', $name, $national_id, $phone, $email,  $address, $profile_pic, $client_number);
+    $rc = $stmt->bind_param('ssssss', $name, $phone, $email,  $address, $profile_pic, $client_number);
     $stmt->execute();
 
     //declare a varible which will be passed to alert function

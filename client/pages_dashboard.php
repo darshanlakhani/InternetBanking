@@ -77,20 +77,17 @@ $stmt->close();
 
 //return total number of  iBank initial cash->balances
 $client_id = $_SESSION['client_id'];
-$result = "SELECT SUM(transaction_amt) FROM iB_Transactions  WHERE client_id =?";
+$result = "SELECT SUM(acc_amount) FROM iB_bankAccounts WHERE client_id = ?";
 $stmt = $mysqli->prepare($result);
 $stmt->bind_param('i', $client_id);
 $stmt->execute();
-$stmt->bind_result($acc_amt);
+$stmt->bind_result($TotalBalInAccount);
 $stmt->fetch();
 $stmt->close();
-//Get the remaining money in the accounts
-$TotalBalInAccount = ($iB_deposits) - (($iB_withdrawal) + ($iB_Transfers));
-
 
 //ibank money in the wallet
 $client_id = $_SESSION['client_id'];
-$result = "SELECT SUM(transaction_amt) FROM iB_Transactions  WHERE client_id = ?";
+$result = "SELECT SUM(acc_amount) FROM iB_bankAccounts WHERE client_id = ?";
 $stmt = $mysqli->prepare($result);
 $stmt->bind_param('i', $client_id);
 $stmt->execute();
@@ -195,16 +192,7 @@ $stmt->close();
             </div>
             <!-- ./Balances-->
           </div>
-          <!-- Credit Score -->
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-credit-card"></i></span>
-              <div class="info-box-content">
-                <span class="info-box-text">Credit Score</span>
-                <span class="info-box-number"><?php echo $credit_score; ?></span>
-              </div>
-            </div>
-          </div>
+
           <!-- ./Credit Score -->
           <div class="row">
             <div class="col-md-12">
@@ -360,7 +348,7 @@ ORDER BY t.created_at DESC
                             <td><?php echo $row->tr_code; ?></a></td>
                             <td><?php echo $row->account_number; ?></td>
                             <td><?php echo $alertClass; ?></td>
-                            <td>$ <?php echo $row->transaction_amt; ?></td>
+                            <td>Rs.<?php echo $row->transaction_amt; ?></td>
                             <td><?php echo $row->client_name; ?></td>
                             <td><?php echo date("d-M-Y h:m:s ", strtotime($transTstamp)); ?></td>
                           </tr>

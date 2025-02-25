@@ -4,46 +4,70 @@ include('conf/config.php');
 include('conf/checklogin.php');
 check_login();
 
+$staff_id = $_SESSION['staff_id']; // Ensure staff is logged in
+
 if (isset($_POST['transaction'])) {
-    $tr_code = $_POST['tr_code'];
-    $account_id = $_GET['account_id'];
-    $tr_type = $_POST['tr_type'];
-    $tr_status = $_POST['tr_status'];
-    $client_id = $_GET['client_id'];
-    $client_name = $_POST['client_name'];
-   
-    $transaction_amt = $_POST['transaction_amt'];
-    $client_phone = $_POST['client_phone'];
+    if (isset($_GET['account_id']) && isset($_GET['account_number']) && isset($_GET['client_id'])) {
+        $tr_code = $_POST['tr_code'];
+        $account_id = $_GET['account_id']; // Client Account ID
+        $account_number = $_GET['account_number'];
+        $client_id = $_GET['client_id'];
+        $transaction_amt = $_POST['transaction_amt'];
 
-    // Notification
-    $notification_details = "$client_name has ";
+        // Start Database Transaction
+        $mysqli->autocommit(FALSE);
 
-    if ($tr_type == 'Deposit') {
-        $notification_details .= "deposited Rs.$transaction_amt into bank account ";
-    } elseif ($tr_type == 'Withdrawal') {
-        $notification_details .= "withdrawn Rs.$transaction_amt from bank account ";
-    }
+        // Fetch Current Account Balance
+        $query = "SELECT acc_amount FROM ib_bankaccounts WHERE account_id = ?";
+        $stmt = $mysqli->prepare($query);
+        $stmt->bind_param('i', $account_id);
+        $stmt->execute();
+        $stmt->bind_result($acc_amount);
+        $stmt->fetch();
+        $stmt->close();
 
-    // Insert transaction details into the database (exclude acc_type)
-    $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, client_id, transaction_amt) VALUES (?,?,?,?,?,?)";
+        // Ensure Deposit Amount is Valid
+        if ($transaction_amt <= 0) {
+            $err = "Invalid amount! Please enter a positive amount.";
+        } else {
+            // Update Account Balance (Increase Balance)
+            $new_balance = $acc_amount + $transaction_amt;
+            $update_balance_query = "UPDATE ib_bankaccounts SET acc_amount = ? WHERE account_id = ?";
+            $stmt = $mysqli->prepare($update_balance_query);
+            $stmt->bind_param('di', $new_balance, $account_id);
+            $stmt->execute();
+            $stmt->close();
 
-    $notification_query = "INSERT INTO iB_notifications (notification_details) VALUES (?)";
+            // Insert Transaction Record (Without processed_by)
+            $insert_transaction = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, client_id, transaction_amt) 
+                                   VALUES (?, ?, 'Deposit', 'Success', ?, ?)";
+            $stmt = $mysqli->prepare($insert_transaction);
+            $stmt->bind_param('ssii', $tr_code, $account_id, $client_id, $transaction_amt);
+            $stmt->execute();
+            $stmt->close();
 
-    $stmt = $mysqli->prepare($query);
-    $notification_stmt = $mysqli->prepare($notification_query);
+            // Insert Notification for Client
+            $notification_details = "A deposit of Rs. $transaction_amt has been made into Bank Account $account_number";
+            $notification_query = "INSERT INTO iB_notifications (notification_details) VALUES (?)";
+            $stmt = $mysqli->prepare($notification_query);
+            $stmt->bind_param('s', $notification_details);
+            $stmt->execute();
+            $stmt->close();
 
-    $notification_stmt->bind_param('s', $notification_details);
-    $stmt->bind_param('sssssi', $tr_code, $account_id, $tr_type, $tr_status, $client_id, $transaction_amt);
-    $stmt->execute();
-    $notification_stmt->execute();
+            // Commit Changes
+            $mysqli->commit();
+            $success = "Deposit of Rs. $transaction_amt was successful!";
+        }
 
-    if ($stmt && $notification_stmt) {
-        $success = "Transaction successful";
+        // Enable Autocommit Again
+        $mysqli->autocommit(TRUE);
     } else {
-        $err = "Please try again later";
+        $err = "Required parameters are missing.";
     }
 }
 ?>
+
+
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -151,6 +175,20 @@ if (isset($_POST['transaction'])) {
         $(document).ready(function() {
             bsCustomFileInput.init();
         });
+
+        document.addEventListener("DOMContentLoaded", function() {
+        document.querySelector("form").addEventListener("submit", function(event) {
+            var transaction_amt = parseFloat(document.getElementById("transaction_amt").value);
+
+            if (isNaN(transaction_amt) || transaction_amt <= 0) {
+                alert("Please enter a valid positive number for the deposit amount.");
+                event.preventDefault();
+                    }
+                });
+        });
+
+
+
     </script>
 </body>
 </html>

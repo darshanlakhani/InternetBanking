@@ -5,14 +5,14 @@ include('conf/checklogin.php');
 check_login();
 $admin_id = $_SESSION['admin_id'];
 
-// Enable/Disable staff
+// Enable/Disable Staff
 if (isset($_GET['toggleStaff'])) {
     $id = intval($_GET['toggleStaff']);
     $currentStatus = intval($_GET['status']);
     $newStatus = $currentStatus === 1 ? 0 : 1;
 
-    $adn = "UPDATE iB_staff SET is_active = ? WHERE staff_id = ?";
-    $stmt = $mysqli->prepare($adn);
+    $query = "UPDATE iB_staff SET is_active = ? WHERE staff_id = ?";
+    $stmt = $mysqli->prepare($query);
     $stmt->bind_param('ii', $newStatus, $id);
     $stmt->execute();
     $stmt->close();
@@ -23,9 +23,25 @@ if (isset($_GET['toggleStaff'])) {
         $err = "Failed to update staff status. Please try again later.";
     }
 }
+
+// 🛑 DELETE STAFF FUNCTIONALITY
+if (isset($_GET['deleteStaff'])) {
+    $id = intval($_GET['deleteStaff']);
+
+    // Delete Query
+    $query = "DELETE FROM iB_staff WHERE staff_id = ?";
+    $stmt = $mysqli->prepare($query);
+    $stmt->bind_param('i', $id);
+
+    if ($stmt->execute()) {
+        echo "<script>alert('Staff deleted successfully!'); window.location.href='pages_manage_staff.php';</script>";
+    } else {
+        echo "<script>alert('Error deleting staff. Please try again later.');</script>";
+    }
+    $stmt->close();
+}
 ?>
 
-<!-- Log on to codeastro.com for more projects! -->
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />

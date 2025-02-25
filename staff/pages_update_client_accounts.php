@@ -16,7 +16,7 @@ if (isset($_POST['update_account'])) {
     $acc_status = $_POST['acc_status'];
     $acc_amount = $_POST['acc_amount'];
 
-    $client_national_id = $_POST['client_national_id'];
+    // $client_national_id = $_POST['client_national_id'];
     $client_name = $_POST['client_name'];
     $client_phone = $_POST['client_phone'];
     $client_number = $_POST['client_number'];
